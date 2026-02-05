@@ -2,9 +2,14 @@ package com.gisdev.library.entity;
 
 import com.gisdev.library.constants.enums.Status;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class Order {
 
@@ -18,5 +23,6 @@ public class Order {
     private String note;
 
     @OneToMany()
+    @ToString.Exclude
     private List<BookOrder> books;
 }

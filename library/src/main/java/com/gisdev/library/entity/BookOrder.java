@@ -1,7 +1,15 @@
 package com.gisdev.library.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class BookOrder {
 
@@ -14,8 +22,10 @@ public class BookOrder {
 
     @OneToOne
     @JoinColumn(name = "bookId")
+    @ToString.Exclude
     private Book book;
     @OneToOne
     @JoinColumn(name = "orderId")
+    @ToString.Exclude
     private Order order;
 }

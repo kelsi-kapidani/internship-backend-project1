@@ -1,9 +1,14 @@
 package com.gisdev.library.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class Library {
 
@@ -15,7 +20,9 @@ public class Library {
     private String address;
 
     @OneToMany
+    @ToString.Exclude
     private List<User> users;
     @OneToMany
+    @ToString.Exclude
     private List<LibraryBook> books;
 }

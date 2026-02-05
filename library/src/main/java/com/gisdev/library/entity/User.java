@@ -2,9 +2,14 @@ package com.gisdev.library.entity;
 
 import com.gisdev.library.constants.enums.Role;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class User {
 
@@ -24,5 +29,6 @@ public class User {
     private Long libraryId;
 
     @OneToMany
+    @ToString.Exclude
     private List<Order> orders;
 }

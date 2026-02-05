@@ -3,9 +3,14 @@ package com.gisdev.library.entity;
 import com.gisdev.library.constants.enums.Genre;
 import com.gisdev.library.constants.enums.Section;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class Book {
 
@@ -21,7 +26,9 @@ public class Book {
     private LocalDate yearOfPublication;
 
     @OneToOne
+    @ToString.Exclude
     private BookOrder order;
     @OneToOne
+    @ToString.Exclude
     private LibraryBook library;
 }
