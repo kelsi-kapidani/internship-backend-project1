@@ -3,13 +3,10 @@ package com.gisdev.library.controller;
 import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.CreateUserRequest;
 import com.gisdev.library.service.LibraryUserService;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/user")
@@ -27,5 +24,14 @@ public class LibraryUserController {
         }
 
         return userService.createUser(request);
+    }
+
+    @GetMapping("/{id}")
+    public Object getUser(@PathVariable long id) {
+
+        if (!userService.idExists(id)) {
+            return new ResponseError("User with this id does not exist");
+        }
+        return userService.getUserById(id);
     }
 }

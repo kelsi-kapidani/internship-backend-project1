@@ -17,11 +17,11 @@ public class LibraryUserService {
         return userRepository.existsByUsername(username);
     }
 
-    public LibraryUser createUser(CreateUserRequest request) {
+    public boolean idExists(Long id) {
+        return userRepository.existsById(id);
+    }
 
-        if (userRepository.existsByUsername(request.username())) {
-            throw new IllegalStateException("Username already exists");
-        }
+    public LibraryUser createUser(CreateUserRequest request) {
 
         LibraryUser user = LibraryUser.builder()
                 .name(request.name())
@@ -35,5 +35,9 @@ public class LibraryUserService {
                 .build();
 
         return userRepository.save(user);
+    }
+
+    public LibraryUser getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
     }
 }
