@@ -21,7 +21,7 @@ public class Library {
 
     @OneToMany
     @ToString.Exclude
-    private List<User> users;
+    private List<LibraryUser> users;
     @OneToMany
     @ToString.Exclude
     private List<LibraryBook> books;

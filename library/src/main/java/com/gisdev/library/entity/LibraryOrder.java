@@ -11,7 +11,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @Entity
-public class Order {
+public class LibraryOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

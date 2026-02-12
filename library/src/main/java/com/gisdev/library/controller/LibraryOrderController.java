@@ -1,12 +1,12 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.service.OrderService;
+import com.gisdev.library.service.LibraryOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class OrderController {
+public class LibraryOrderController {
 
-    public final OrderService orderService;
+    public final LibraryOrderService orderService;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class User {
+public class LibraryUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,5 @@ public class User {
 
     @OneToMany
     @ToString.Exclude
-    private List<Order> orders;
+    private List<LibraryOrder> orders;
 }

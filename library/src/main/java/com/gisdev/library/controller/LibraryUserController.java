@@ -1,9 +1,9 @@
 package com.gisdev.library.controller;
 
+import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.CreateUserRequest;
-import com.gisdev.library.entity.User;
-import com.gisdev.library.service.UserService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.gisdev.library.service.LibraryUserService;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,12 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 @Controller
 @RequiredArgsConstructor
-public class UserController {
+public class LibraryUserController {
 
-    public final UserService userService;
+    public final LibraryUserService userService;
 
     @PostMapping("/add")
-    public User addUser(@Valid @RequestBody CreateUserRequest request) {
+    public Object addUser(@Valid @RequestBody CreateUserRequest request) {
+
+        if (userService.usernameExists(request.username())) {
+            return new ResponseError("Username already exists");
+        }
+
         return userService.createUser(request);
     }
 }

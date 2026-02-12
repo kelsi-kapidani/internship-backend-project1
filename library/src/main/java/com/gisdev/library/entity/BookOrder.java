@@ -27,5 +27,5 @@ public class BookOrder {
     @OneToOne
     @JoinColumn(name = "orderId")
     @ToString.Exclude
-    private Order order;
+    private LibraryOrder order;
 }

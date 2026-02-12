@@ -1,0 +1,11 @@
+POST http://localhost:8081/users/add
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "surname": "Smith",
+  "username": "alice123",
+  "password": "Test@1234",
+  "email": "alice@example.com",
+  "libraryId": 1
+}

@@ -2,20 +2,28 @@ package com.gisdev.library.service;
 
 import com.gisdev.library.constants.enums.Role;
 import com.gisdev.library.dto.request.CreateUserRequest;
-import com.gisdev.library.entity.User;
-import com.gisdev.library.repository.UserRepository;
+import com.gisdev.library.entity.LibraryUser;
+import com.gisdev.library.repository.LibraryUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class LibraryUserService {
 
-    public final UserRepository userRepository;
+    public final LibraryUserRepository userRepository;
 
-    public User createUser(CreateUserRequest request) {
+    public boolean usernameExists(String username) {
+        return userRepository.existsByUsername(username);
+    }
 
-        User user = User.builder()
+    public LibraryUser createUser(CreateUserRequest request) {
+
+        if (userRepository.existsByUsername(request.username())) {
+            throw new IllegalStateException("Username already exists");
+        }
+
+        LibraryUser user = LibraryUser.builder()
                 .name(request.name())
                 .surname(request.surname())
                 .username(request.username())
