@@ -6,6 +6,9 @@
 
 * Kur eshte me mire te perdoren associations clasases ne mes ne vend te thjesht nje assosacione?
 
+* A duhen krijuar controller dhe service per association classes? (per siguri)
+
+* Per errors duhen krijuar custom apo ka librari te gatshme (si te behen trigger)
 
 # Shenime
 

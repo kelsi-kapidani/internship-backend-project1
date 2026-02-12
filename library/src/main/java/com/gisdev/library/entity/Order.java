@@ -17,7 +17,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private Status status;
+
     private Integer OrderNumber;
     private Long userId;
     private String note;

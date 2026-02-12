@@ -20,8 +20,13 @@ public class Book {
 
     private String title;
     private String author;
+
+    @Enumerated(EnumType.STRING)
     private Genre genre;
+
+    @Enumerated(EnumType.STRING)
     private Section section;
+
     private String price;
     private LocalDate yearOfPublication;
 

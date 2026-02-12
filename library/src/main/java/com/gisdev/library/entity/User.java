@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class User {
 
@@ -23,7 +25,9 @@ public class User {
     private String username;
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
+
     private String email;
     private boolean active;
     private Long libraryId;
