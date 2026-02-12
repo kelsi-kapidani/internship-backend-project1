@@ -2,6 +2,8 @@ package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.CreateUserRequest;
+import com.gisdev.library.dto.request.UpdateUserRequest;
+import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.service.LibraryUserService;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -33,5 +35,15 @@ public class LibraryUserController {
             return new ResponseError("User with this id does not exist");
         }
         return userService.getUserById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Object updateUser(@PathVariable long id, @RequestBody UpdateUserRequest request) {
+
+        LibraryUser user = userService.changeUser(id, request);
+        if (user == null) {
+            return new ResponseError("User you are trying to update does not exist");
+        }
+        return user;
     }
 }
