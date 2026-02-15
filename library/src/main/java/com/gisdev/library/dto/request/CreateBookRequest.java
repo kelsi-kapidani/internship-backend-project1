@@ -3,6 +3,7 @@ package com.gisdev.library.dto.request;
 import com.gisdev.library.constants.enums.Genre;
 import com.gisdev.library.constants.enums.Section;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
@@ -13,9 +14,9 @@ public record CreateBookRequest(
         String title,
         @NotBlank(message = "Author is required")
         String author,
-        @NotBlank(message = "Genre is required")
+        @NotNull(message = "Genre is required")
         Genre genre,
-        @NotBlank(message = "Section is required")
+        @NotNull(message = "Section is required")
         Section section,
         @NotBlank(message = "Price is required")
         @Pattern(
@@ -23,6 +24,6 @@ public record CreateBookRequest(
                 message = "Price must be a number greater than zero"
         )
         String price,
-        @NotBlank(message = "Year of publication is required")
+        @NotNull(message = "Year of publication is required")
         LocalDate yearOfPublication
 ) {}

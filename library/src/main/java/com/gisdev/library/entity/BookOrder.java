@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -20,12 +22,12 @@ public class BookOrder {
     private Integer size;
     private Integer value;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "bookId")
     @ToString.Exclude
     private Book book;
-    @OneToOne
-    @JoinColumn(name = "orderId")
+    @ManyToOne
+    @JoinColumn(name = "libraryorderId")
     @ToString.Exclude
     private LibraryOrder order;
 }

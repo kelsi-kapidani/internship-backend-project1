@@ -1,15 +1,16 @@
 package com.gisdev.library.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class LibraryBook {
 
@@ -23,7 +24,7 @@ public class LibraryBook {
     @JoinColumn(name = "bookId")
     @ToString.Exclude
     private Book book;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "libraryId")
     @ToString.Exclude
     private Library library;

@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,7 +36,7 @@ public class Book {
     @OneToOne
     @ToString.Exclude
     private BookOrder order;
-    @OneToOne
+    @OneToMany
     @ToString.Exclude
-    private LibraryBook library;
+    private List<LibraryBook> library;
 }
