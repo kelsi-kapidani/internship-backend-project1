@@ -6,9 +6,11 @@ import com.gisdev.library.constants.enums.Section;
 import java.time.LocalDate;
 
 public record UpdateBookRequest(
+
         String title,
         String author,
         Genre genre,
         Section section,
+        String price,
         LocalDate yearOfPublication
 ) {}

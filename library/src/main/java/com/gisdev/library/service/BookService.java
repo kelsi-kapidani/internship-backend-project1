@@ -25,12 +25,14 @@ public class BookService {
 
     public Book createBook(CreateBookRequest request) {
 
-        Book book = new Book();
-        book.setTitle(request.title());
-        book.setAuthor(request.author());
-        book.setGenre(request.genre());
-        book.setSection(request.section());
-        book.setYearOfPublication(request.yearOfPublication());
+        Book book = Book.builder()
+                .title(request.title())
+                .author(request.author())
+                .genre(request.genre())
+                .section(request.section())
+                .price(request.price())
+                .yearOfPublication(request.yearOfPublication())
+                .build();
 
         return bookRepository.save(book);
     }
@@ -54,6 +56,9 @@ public class BookService {
         }
         if (request.section() != null) {
             book.setSection(request.section());
+        }
+        if (request.price() != null) {
+            book.setPrice(request.price());
         }
         if (request.yearOfPublication() != null) {
             book.setYearOfPublication(request.yearOfPublication());
