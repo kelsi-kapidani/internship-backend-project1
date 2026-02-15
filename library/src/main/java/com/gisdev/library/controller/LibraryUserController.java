@@ -18,8 +18,8 @@ public class LibraryUserController {
 
     public final LibraryUserService userService;
 
-    @PostMapping("/add")
-    public Object addUser(@Valid @RequestBody CreateUserRequest request) {
+    @PostMapping("/create")
+    public Object createUser(@Valid @RequestBody CreateUserRequest request) {
 
         if (userService.usernameExists(request.username())) {
             return new ResponseError("Username already exists");
@@ -34,13 +34,13 @@ public class LibraryUserController {
         if (!userService.idExists(id)) {
             return new ResponseError("User with this id does not exist");
         }
-        return userService.getUserById(id);
+        return userService.getUser(id);
     }
 
     @PutMapping("/{id}")
     public Object updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
 
-        LibraryUser user = userService.changeUser(id, request);
+        LibraryUser user = userService.updateUser(id, request);
         if (user == null) {
             return new ResponseError("User you are trying to update does not exist");
         }

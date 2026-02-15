@@ -38,12 +38,12 @@ public class LibraryUserService {
         return userRepository.save(user);
     }
 
-    public LibraryUser getUserById(Long id) {
+    public LibraryUser getUser(Long id) {
 
         return userRepository.findById(id).orElse(null);
     }
 
-    public LibraryUser changeUser(Long id, UpdateUserRequest request) {
+    public LibraryUser updateUser(Long id, UpdateUserRequest request) {
 
         LibraryUser user = userRepository.findById(id).orElse(null);
 
@@ -73,10 +73,10 @@ public class LibraryUserService {
     }
 
     public boolean setUserActive (Long id) {
-        if(getUserById(id) == null) {
+        if(getUser(id) == null) {
             return false;
         }
-        getUserById(id).setActive(true);
+        getUser(id).setActive(true);
         return true;
     }
 }
