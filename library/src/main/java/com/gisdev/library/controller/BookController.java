@@ -48,4 +48,10 @@ public class BookController {
         bookService.deleteBook(id);
         return new ResponseError("Deletion successful");
     }
+
+    @GetMapping("/all")
+    public List<Book> getAllBooks() {
+
+        return bookService.getAllBooks();
+    }
 }

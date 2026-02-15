@@ -3,6 +3,7 @@ package com.gisdev.library.service;
 import com.gisdev.library.dto.request.CreateBookRequest;
 import com.gisdev.library.dto.request.UpdateBookRequest;
 import com.gisdev.library.entity.Book;
+import com.gisdev.library.entity.Library;
 import com.gisdev.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -68,14 +69,22 @@ public class BookService {
     }
 
     public void deleteBook(Long id) {
+
         bookRepository.deleteById(id);
     }
 
     public List<Book> getAllBooks() {
+
         return bookRepository.findAll();
     }
 
     public Book getBook(Long id) {
+
         return bookRepository.findById(id).orElse(null);
+    }
+
+    public List<Book> getAllbooks() {
+
+        return bookRepository.findAll();
     }
 }
