@@ -73,10 +73,20 @@ public class LibraryUserService {
     }
 
     public boolean setUserActive (Long id) {
+
         if(getUser(id) == null) {
             return false;
         }
         getUser(id).setActive(true);
+        return true;
+    }
+
+    public boolean changePassword (Long uid, String newpass) {
+
+        String oldpass = userRepository.findById(uid).get().getPassword();
+        if( oldpass == newpass) {
+            return false;
+        }
         return true;
     }
 }

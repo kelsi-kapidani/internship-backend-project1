@@ -55,4 +55,14 @@ public class LibraryUserController {
         return new ResponseError("User you tried to activate not found");
 
     }
+
+    @PutMapping("/password/{id}")
+    public Object changePassword(@PathVariable Long id, @Valid @RequestBody String password) {
+
+        boolean result = userService.changePassword(id, password);
+        if (result) {
+            return new ResponseError("Password changed successfully");
+        }
+        return new ResponseError("New password is the same as the old one");
+    }
 }
