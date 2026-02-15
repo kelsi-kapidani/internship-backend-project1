@@ -13,6 +13,5 @@ public record UpdateUserRequest(
 
     String email,
 
-    Boolean active,
     Long libraryId
 ) {}

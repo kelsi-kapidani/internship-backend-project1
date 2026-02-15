@@ -38,12 +38,21 @@ public class LibraryUserController {
     }
 
     @PutMapping("/{id}")
-    public Object updateUser(@PathVariable long id, @RequestBody UpdateUserRequest request) {
+    public Object updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
 
         LibraryUser user = userService.changeUser(id, request);
         if (user == null) {
             return new ResponseError("User you are trying to update does not exist");
         }
         return user;
+    }
+
+    @PutMapping("/activate/{id}")
+    public ResponseError activateUser(@PathVariable Long id) {
+        if (userService.setUserActive(id)) {
+            return new ResponseError("User activated successfully");
+        }
+        return new ResponseError("User you tried to activate not found");
+
     }
 }

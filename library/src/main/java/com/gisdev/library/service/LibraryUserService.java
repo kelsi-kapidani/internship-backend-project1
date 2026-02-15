@@ -66,12 +66,17 @@ public class LibraryUserService {
         if (request.email() != null) {
             user.setEmail(request.email());
         }
-        if (request.active() != null) {
-            user.setActive(request.active());
-        }
         if (request.libraryId() != null) {
             user.setLibraryId(request.libraryId());
         }
         return userRepository.save(user);
+    }
+
+    public boolean setUserActive (Long id) {
+        if(getUserById(id) == null) {
+            return false;
+        }
+        getUserById(id).setActive(true);
+        return true;
     }
 }
