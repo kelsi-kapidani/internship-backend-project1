@@ -1,12 +1,50 @@
 package com.gisdev.library.controller;
 
+import com.gisdev.library.dto.ResponseError;
+import com.gisdev.library.dto.request.CreateBookRequest;
+import com.gisdev.library.dto.request.UpdateBookRequest;
+import com.gisdev.library.entity.Book;
 import com.gisdev.library.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/book")
 @RequiredArgsConstructor
 public class BookController {
 
-    public final BookService bookService;
+    private final BookService bookService;
+
+    @PostMapping("/create")
+    public Object createBook(@RequestBody CreateBookRequest request) {
+
+        if (bookService.titleExists(request.title())) {
+            return new ResponseError("Book with this title already exists");
+        }
+
+        return bookService.createBook(request);
+    }
+
+    @PutMapping("/{id}")
+    public Object updateBook(@PathVariable Long id, @RequestBody UpdateBookRequest request) {
+
+        if (!bookService.idExists(id)) {
+            return new ResponseError("Book with this id does not exist");
+        }
+
+        return bookService.updateBook(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    public Object deleteBook(@PathVariable Long id) {
+
+        if (!bookService.idExists(id)) {
+            return new ResponseError("Book with this id does not exist");
+        }
+
+        bookService.deleteBook(id);
+        return new ResponseError("Deletion successful");
+    }
 }

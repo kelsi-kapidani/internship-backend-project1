@@ -26,15 +26,6 @@ public class LibraryController {
         return libraryService.getAllLibraries();
     }
 
-    @GetMapping("/{id}")
-    public Object getLibrary(@PathVariable long id) {
-
-        if (!libraryService.idExists(id)) {
-            return new ResponseError("Library with this id does not exist");
-        }
-        return libraryService.getLibrary(id);
-    }
-
     @PostMapping("/create")
     public Object createLibrary(@Valid @RequestBody CreateLibraryRequest request) {
 
