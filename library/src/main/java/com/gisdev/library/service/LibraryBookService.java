@@ -2,6 +2,8 @@ package com.gisdev.library.service;
 
 
 import com.gisdev.library.dto.ResponseError;
+import com.gisdev.library.dto.response.BookWithLibraryStockResponse;
+import com.gisdev.library.dto.response.LibraryStock;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryBook;
@@ -11,7 +13,7 @@ import com.gisdev.library.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,21 @@ public class LibraryBookService {
             }
         }
         return new ResponseError("Books added successfully to library");
+    }
+
+    public List<BookWithLibraryStockResponse> getAllBookStocks() {
+
+        List<BookWithLibraryStockResponse> result = new ArrayList<>();
+        List<Book> books = bookRepository.findAll();
+        for (Book book: books) {
+            List<LibraryBook> lbs = lbRepository.findAllByBook(book);
+            List<LibraryStock> libstock = new ArrayList<>();
+            for (LibraryBook lb: lbs) {
+                libstock.add(new LibraryStock(lb.getLibrary(), lb.getStock()));
+            }
+            result.add(new BookWithLibraryStockResponse(book, libstock));
+        }
+        return result;
     }
 
 }
