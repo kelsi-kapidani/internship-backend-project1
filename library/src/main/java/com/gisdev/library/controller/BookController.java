@@ -4,6 +4,7 @@ import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.CreateBookRequest;
 import com.gisdev.library.dto.request.UpdateBookRequest;
 import com.gisdev.library.entity.Book;
+import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BookController {
     public Object deleteBook(@PathVariable Long id) {
 
         if (!bookService.idExists(id)) {
-            return new ResponseError("Book with this id does not exist");
+                return new BadRequestException("Book with this id does not exist");
         }
 
         bookService.deleteBook(id);
