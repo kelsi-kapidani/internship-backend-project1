@@ -5,6 +5,9 @@ import com.gisdev.library.dto.request.CreateUserRequest;
 import com.gisdev.library.dto.request.UpdateUserRequest;
 import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.service.LibraryUserService;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Controller;
 @RequestMapping("/user")
 @Controller
 @RequiredArgsConstructor
+@Validated
 public class LibraryUserController {
 
     public final LibraryUserService userService;
@@ -57,7 +61,14 @@ public class LibraryUserController {
     }
 
     @PutMapping("/password/{id}")
-    public Object changePassword(@PathVariable Long id, @Valid @RequestBody String password) {
+    public Object changePassword(
+            @PathVariable Long id,
+            @NotBlank(message = "Password is empty")
+            @Pattern(
+                    regexp = ".*[!@#$%^&*()_+=|<>?{}\\[\\]~-].*",
+                    message = "Password must contain at least one special character"
+            )
+            String password) {
 
         boolean result = userService.changePassword(id, password);
         if (result) {
