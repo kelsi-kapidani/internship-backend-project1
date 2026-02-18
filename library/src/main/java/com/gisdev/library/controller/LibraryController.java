@@ -1,8 +1,8 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.CreateLibraryRequest;
-import com.gisdev.library.dto.request.UpdateLibraryRequest;
+import com.gisdev.library.dto.request.LibraryCreateDTO;
+import com.gisdev.library.dto.request.LibraryUpdateDTO;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.service.LibraryService;
 import jakarta.validation.Valid;
@@ -27,7 +27,7 @@ public class LibraryController {
     }
 
     @PostMapping("/create")
-    public Object createLibrary(@Valid @RequestBody CreateLibraryRequest request) {
+    public Object createLibrary(@Valid @RequestBody LibraryCreateDTO request) {
 
         if (libraryService.nameExists(request.name())) {
             return new ResponseError("Library with this name already exists");
@@ -36,7 +36,7 @@ public class LibraryController {
     }
 
     @PutMapping("/{id}")
-    public Object updateLibrary(@PathVariable Long id, @RequestBody UpdateLibraryRequest request) {
+    public Object updateLibrary(@PathVariable Long id, @RequestBody LibraryUpdateDTO request) {
         if (!libraryService.idExists(id)) {
             return new ResponseError("Library with this id does not exist");
         }

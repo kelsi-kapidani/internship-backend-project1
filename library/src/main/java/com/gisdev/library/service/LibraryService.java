@@ -1,10 +1,8 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.request.CreateLibraryRequest;
-import com.gisdev.library.dto.request.UpdateLibraryRequest;
-import com.gisdev.library.dto.request.UpdateUserRequest;
+import com.gisdev.library.dto.request.LibraryCreateDTO;
+import com.gisdev.library.dto.request.LibraryUpdateDTO;
 import com.gisdev.library.entity.Library;
-import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +23,7 @@ public class LibraryService {
         return libraryRepository.existsById(id);
     }
 
-    public Library createLibrary(CreateLibraryRequest request) {
+    public Library createLibrary(LibraryCreateDTO request) {
 
         Library library = Library.builder()
                 .name(request.name())
@@ -35,7 +33,7 @@ public class LibraryService {
         return libraryRepository.save(library);
     }
 
-    public Library updateLibrary(Long id, UpdateLibraryRequest request) {
+    public Library updateLibrary(Long id, LibraryUpdateDTO request) {
 
         Library library = libraryRepository.findById(id).orElse(null);
 

@@ -1,9 +1,8 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.request.CreateBookRequest;
-import com.gisdev.library.dto.request.UpdateBookRequest;
+import com.gisdev.library.dto.request.BookCreateDTO;
+import com.gisdev.library.dto.request.BookUpdateDTO;
 import com.gisdev.library.entity.Book;
-import com.gisdev.library.entity.Library;
 import com.gisdev.library.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ public class BookService {
         return bookRepository.existsById(id);
     }
 
-    public Book createBook(CreateBookRequest request) {
+    public Book createBook(BookCreateDTO request) {
 
         Book book = Book.builder()
                 .title(request.title())
@@ -38,7 +37,7 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public Book updateBook(Long id, UpdateBookRequest request) {
+    public Book updateBook(Long id, BookUpdateDTO request) {
 
         Book book = bookRepository.findById(id).orElse(null);
 

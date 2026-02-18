@@ -2,8 +2,8 @@ package com.gisdev.library.service;
 
 
 import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.response.BookWithLibraryStockResponse;
-import com.gisdev.library.dto.response.LibraryStock;
+import com.gisdev.library.dto.response.BookLibraryStockDTO;
+import com.gisdev.library.dto.response.BookLibraryStockDTO.LibraryStock;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryBook;
@@ -44,14 +44,15 @@ public class LibraryBookService {
                 lbRepository.save(newlb);
             } else {
                 lb.setStock(lb.getStock() + 1);
+                lbRepository.save(lb);
             }
         }
         return new ResponseError("Books added successfully to library");
     }
 
-    public List<BookWithLibraryStockResponse> getAllBookStocks() {
+    public List<BookLibraryStockDTO> getAllBookStocks() {
 
-        List<BookWithLibraryStockResponse> result = new ArrayList<>();
+        List<BookLibraryStockDTO> result = new ArrayList<>();
         List<Book> books = bookRepository.findAll();
         for (Book book: books) {
             List<LibraryBook> lbs = lbRepository.findAllByBook(book);
@@ -59,7 +60,7 @@ public class LibraryBookService {
             for (LibraryBook lb: lbs) {
                 libstock.add(new LibraryStock(lb.getLibrary(), lb.getStock()));
             }
-            result.add(new BookWithLibraryStockResponse(book, libstock));
+            result.add(new BookLibraryStockDTO(book, libstock));
         }
         return result;
     }

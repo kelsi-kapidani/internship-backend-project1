@@ -1,6 +1,6 @@
 package com.gisdev.library.dto.request;
 
-public record UpdateLibraryRequest(
+public record LibraryUpdateDTO(
 
         String name,
         String address

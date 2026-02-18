@@ -1,8 +1,8 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.CreateBookRequest;
-import com.gisdev.library.dto.request.UpdateBookRequest;
+import com.gisdev.library.dto.request.BookCreateDTO;
+import com.gisdev.library.dto.request.BookUpdateDTO;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.service.BookService;
@@ -20,7 +20,7 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping("/create")
-    public Object createBook(@Valid @RequestBody CreateBookRequest request) {
+    public Object createBook(@Valid @RequestBody BookCreateDTO request) {
 
         if (bookService.titleExists(request.title())) {
             return new ResponseError("Book with this title already exists");
@@ -30,7 +30,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public Object updateBook(@PathVariable Long id, @RequestBody UpdateBookRequest request) {
+    public Object updateBook(@PathVariable Long id, @RequestBody BookUpdateDTO request) {
 
         if (!bookService.idExists(id)) {
             return new ResponseError("Book with this id does not exist");

@@ -1,9 +1,6 @@
 package com.gisdev.library.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
-public record UpdateUserRequest(
+public record UserUpdateDTO(
 
     String name,
     String surname,

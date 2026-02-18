@@ -2,7 +2,7 @@ package com.gisdev.library.dto.request;
 
 import jakarta.validation.constraints.*;
 
-public record CreateUserRequest (
+public record UserCreateDTO(
 
     @NotBlank(message = "Name is required")
     String name,

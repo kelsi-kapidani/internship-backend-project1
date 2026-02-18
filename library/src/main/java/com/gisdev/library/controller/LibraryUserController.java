@@ -1,8 +1,8 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.CreateUserRequest;
-import com.gisdev.library.dto.request.UpdateUserRequest;
+import com.gisdev.library.dto.request.UserCreateDTO;
+import com.gisdev.library.dto.request.UserUpdateDTO;
 import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.service.LibraryUserService;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +23,7 @@ public class LibraryUserController {
     public final LibraryUserService userService;
 
     @PostMapping("/create")
-    public Object createUser(@Valid @RequestBody CreateUserRequest request) {
+    public Object createUser(@Valid @RequestBody UserCreateDTO request) {
 
         if (userService.usernameExists(request.username())) {
             return new ResponseError("Username already exists");
@@ -42,7 +42,7 @@ public class LibraryUserController {
     }
 
     @PutMapping("/{id}")
-    public Object updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
+    public Object updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO request) {
 
         LibraryUser user = userService.updateUser(id, request);
         if (user == null) {

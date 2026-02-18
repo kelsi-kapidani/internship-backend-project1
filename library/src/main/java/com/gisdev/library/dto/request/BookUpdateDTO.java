@@ -5,7 +5,7 @@ import com.gisdev.library.constants.enums.Section;
 
 import java.time.LocalDate;
 
-public record UpdateBookRequest(
+public record BookUpdateDTO(
 
         String title,
         String author,

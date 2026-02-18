@@ -1,8 +1,8 @@
 package com.gisdev.library.service;
 
 import com.gisdev.library.constants.enums.Role;
-import com.gisdev.library.dto.request.CreateUserRequest;
-import com.gisdev.library.dto.request.UpdateUserRequest;
+import com.gisdev.library.dto.request.UserCreateDTO;
+import com.gisdev.library.dto.request.UserUpdateDTO;
 import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.repository.LibraryUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class LibraryUserService {
         return userRepository.existsById(id);
     }
 
-    public LibraryUser createUser(CreateUserRequest request) {
+    public LibraryUser createUser(UserCreateDTO request) {
 
         LibraryUser user = LibraryUser.builder()
                 .name(request.name())
@@ -43,7 +43,7 @@ public class LibraryUserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public LibraryUser updateUser(Long id, UpdateUserRequest request) {
+    public LibraryUser updateUser(Long id, UserUpdateDTO request) {
 
         LibraryUser user = userRepository.findById(id).orElse(null);
 
@@ -78,15 +78,22 @@ public class LibraryUserService {
             return false;
         }
         getUser(id).setActive(true);
+        userRepository.save(getUser(id));
         return true;
     }
 
-    public boolean changePassword (Long uid, String newpass) {
+    public boolean changePassword (Long id, String newpass) {
 
-        String oldpass = userRepository.findById(uid).get().getPassword();
-        if( oldpass == newpass) {
+        LibraryUser user = getUser(id);
+        if (user == null) {
             return false;
         }
+
+        if (user.getPassword() == newpass) {
+            return false;
+        }
+        user.setPassword(newpass);
+        userRepository.save(user);
         return true;
     }
 }

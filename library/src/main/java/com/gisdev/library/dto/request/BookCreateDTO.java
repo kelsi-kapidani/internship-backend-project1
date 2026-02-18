@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 
-public record CreateBookRequest(
+public record BookCreateDTO(
 
         @NotBlank(message = "Title is required")
         String title,

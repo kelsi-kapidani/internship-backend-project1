@@ -1,8 +1,7 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.AddBooksRequest;
-import com.gisdev.library.dto.response.BookWithLibraryStockResponse;
+import com.gisdev.library.dto.request.LibraryBookAddDTO;
+import com.gisdev.library.dto.response.BookLibraryStockDTO;
 import com.gisdev.library.service.LibraryBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +19,13 @@ public class LibraryBookController {
     public final LibraryBookService lbService;
 
     @PutMapping("/add/{id}")
-    public Object addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody AddBooksRequest request) {
+    public Object addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody LibraryBookAddDTO request) {
 
         return lbService.addListOfBooks(request.idOfBooks(), id);
     }
 
     @GetMapping
-    public List<BookWithLibraryStockResponse> getAllBookStocks() {
+    public List<BookLibraryStockDTO> getAllBookStocks() {
 
         return lbService.getAllBookStocks();
     }
