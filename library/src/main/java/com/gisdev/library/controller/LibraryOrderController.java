@@ -2,6 +2,7 @@ package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.request.OrderCreateDTO;
 import com.gisdev.library.dto.request.OrderUpdateDTO;
+import com.gisdev.library.dto.response.OrderDTO;
 import com.gisdev.library.entity.LibraryOrder;
 import com.gisdev.library.service.LibraryOrderService;
 import jakarta.validation.Valid;
@@ -19,20 +20,20 @@ public class LibraryOrderController {
 
     public final LibraryOrderService orderService;
 
-    @PostMapping("create/{id}")
+    @PostMapping("/create/{id}")
     public Object createOrder(@PathVariable Long id, @Valid @RequestBody OrderCreateDTO request) {
 
         return orderService.createOrder(id, request);
     }
 
-    @PatchMapping("update/{id}")
+    @PatchMapping("/update/{id}")
     public Object updateOrder(@PathVariable Long id, @Valid @RequestBody OrderUpdateDTO request) {
 
         return orderService.updateOrder(id, request);
     }
 
     @GetMapping("/pending")
-    public List<LibraryOrder> getAllPendingOrders() {
+    public List<OrderDTO> getAllPendingOrders() {
 
         return orderService.getAllPendingOrders();
     }

@@ -11,8 +11,8 @@ public record BookUpdateDTO(
 
         @NotBlank String title,
         @NotBlank String author,
-        @NotBlank Genre genre,
-        @NotBlank Section section,
+        @NotNull Genre genre,
+        @NotNull Section section,
         @NotBlank String price,
         @NotNull LocalDate yearOfPublication
 ) {}

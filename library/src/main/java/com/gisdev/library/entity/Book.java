@@ -33,11 +33,10 @@ public class Book {
     private String price;
     private LocalDate yearOfPublication;
 
-    @OneToOne(mappedBy = "book")
+    @OneToMany(mappedBy = "book")
     @ToString.Exclude
-    private BookOrder order;
-    @ManyToOne
-    @JoinColumn(name = "libraryId")
+    private List<BookOrder> orders;
+    @OneToMany(mappedBy = "book")
     @ToString.Exclude
-    private List<LibraryBook> library;
+    private List<LibraryBook> libraries;
 }

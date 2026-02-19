@@ -15,7 +15,7 @@ public record OrderCreateDTO(
 ) {
     public record BookOrderRequest (
 
-        Book book,
+        Long bookId,
         Integer amount
     ){}
 }

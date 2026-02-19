@@ -1,10 +1,8 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.BookCreateDTO;
 import com.gisdev.library.dto.request.BookUpdateDTO;
-import com.gisdev.library.entity.Book;
-import com.gisdev.library.exception.BadRequestException;
+import com.gisdev.library.dto.response.BookDTO;
 import com.gisdev.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +36,7 @@ public class BookController {
     }
 
     @GetMapping("/all")
-    public List<Book> getAllBooks() {
+    public List<BookDTO> getAllBooks() {
 
         return bookService.getAllBooks();
     }

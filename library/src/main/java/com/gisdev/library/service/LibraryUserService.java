@@ -1,11 +1,13 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.constants.enums.Role;
 import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.UserCreateDTO;
 import com.gisdev.library.dto.request.UserUpdateDTO;
+import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.exception.BadRequestException;
+import com.gisdev.library.mapper.UserMapper;
+import com.gisdev.library.repository.LibraryRepository;
 import com.gisdev.library.repository.LibraryUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class LibraryUserService {
 
     public final LibraryUserRepository userRepository;
+    public final LibraryRepository libraryRepository;
+    public final UserMapper userMapper;
 
     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
@@ -25,18 +29,14 @@ public class LibraryUserService {
         if (usernameExists(request.username())) {
             return new BadRequestException("Username already exists");
         }
-        LibraryUser user = LibraryUser.builder()
-                .name(request.name())
-                .surname(request.surname())
-                .username(request.username())
-                .password(request.password())
-                .email(request.email())
-                .active(false)
-                .role(Role.USER)
-                .libraryId(request.libraryId())
-                .build();
-
-        return userRepository.save(user);
+        Library library = libraryRepository.findById(request.libraryId()).orElse(null);
+        if (library == null) {
+            return new BadRequestException("Library of the user does not exist");
+        }
+        LibraryUser user = userMapper.toEntity(request);
+        user.setLibrary(library);
+        userRepository.save(user);
+        return new ResponseError("User created successfully");
     }
 
     public Object getUser(Long id) {
@@ -45,23 +45,23 @@ public class LibraryUserService {
         if (user == null) {
             return new BadRequestException("User with this id does not exist");
         }
-        return user;
+        return userMapper.toDto(user);
     }
 
     public Object updateUser(Long id, UserUpdateDTO request) {
 
         LibraryUser user = userRepository.findById(id).orElse(null);
+        Library library = libraryRepository.findById(request.libraryId()).orElse(null);
         if (user == null) {
             return new BadRequestException("User you are trying to update does not exist");
         }
-        user.setName(request.name());
-        user.setSurname(request.surname());
-        user.setUsername(request.username());
-        user.setPassword(request.password());
-        user.setEmail(request.email());
-        user.setLibraryId(request.libraryId());
-
-        return userRepository.save(user);
+        if (library == null) {
+            return new BadRequestException("Library of the user does not exist");
+        }
+        userMapper.updateUserFromDto(request, user);
+        user.setLibrary(library);
+        userRepository.save(user);
+        return new ResponseError("User updated successfully");
     }
 
     public Object setUserActive (Long id) {
@@ -71,7 +71,8 @@ public class LibraryUserService {
             return new BadRequestException("User with this id does not exist");
         }
         user.setActive(true);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return  new ResponseError("User activated sucessfully");
     }
 
     public Object changePassword (Long id, String newpass) {
@@ -84,6 +85,7 @@ public class LibraryUserService {
             return new BadRequestException("This password is the old one");
         }
         user.setPassword(newpass);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return new ResponseError("Password changed successfully");
     }
 }

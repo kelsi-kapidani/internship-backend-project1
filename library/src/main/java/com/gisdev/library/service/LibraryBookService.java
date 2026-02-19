@@ -1,11 +1,13 @@
 package com.gisdev.library.service;
 
+import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.response.BookLibraryStockDTO;
 import com.gisdev.library.dto.response.BookLibraryStockDTO.LibraryStock;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryBook;
 import com.gisdev.library.exception.BadRequestException;
+import com.gisdev.library.mapper.LibraryMapper;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.repository.LibraryBookRepository;
 import com.gisdev.library.repository.LibraryRepository;
@@ -20,6 +22,7 @@ public class LibraryBookService {
     public final LibraryBookRepository lbRepository;
     public final LibraryRepository libraryRepository;
     public final BookRepository bookRepository;
+    public final LibraryMapper libraryMapper;
 
     public Object addListOfBooks(List<Long> idOfBooks, Long libraryId) {
 
@@ -45,7 +48,7 @@ public class LibraryBookService {
                 lbRepository.save(lb);
             }
         }
-        return new BadRequestException("Books added successfully to library");
+        return new ResponseError("Books added successfully to library");
     }
 
     public List<BookLibraryStockDTO> getAllBookStocks() {
@@ -56,9 +59,9 @@ public class LibraryBookService {
             List<LibraryBook> lbs = lbRepository.findAllByBook(book);
             List<LibraryStock> libstock = new ArrayList<>();
             for (LibraryBook lb: lbs) {
-                libstock.add(new LibraryStock(lb.getLibrary(), lb.getStock()));
+                libstock.add(new LibraryStock(lb.getLibrary().getId(), lb.getLibrary().getName(), lb.getStock()));
             }
-            result.add(new BookLibraryStockDTO(book, libstock));
+            result.add(new BookLibraryStockDTO(libraryMapper.toBookDto(book), libstock));
         }
         return result;
     }

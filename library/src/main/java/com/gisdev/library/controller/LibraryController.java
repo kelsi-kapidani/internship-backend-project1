@@ -1,9 +1,8 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.LibraryCreateDTO;
 import com.gisdev.library.dto.request.LibraryUpdateDTO;
-import com.gisdev.library.entity.Library;
+import com.gisdev.library.dto.response.LibraryDTO;
 import com.gisdev.library.service.LibraryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class LibraryController {
     public final LibraryService libraryService;
 
     @GetMapping("/all")
-    public List<Library> getAllLibraries () {
+    public List<LibraryDTO> getAllLibraries () {
 
         return libraryService.getAllLibraries();
     }
