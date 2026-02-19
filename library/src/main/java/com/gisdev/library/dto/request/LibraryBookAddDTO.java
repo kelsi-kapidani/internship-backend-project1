@@ -7,5 +7,12 @@ import java.util.List;
 public record LibraryBookAddDTO(
 
         @NotNull(message = "List of books is empty")
-        List<Long> idOfBooks
+        List<BookAddDTO> books
+) {
+
+        public record BookAddDTO(
+
+                Long id,
+                Integer amount
         ) {}
+}

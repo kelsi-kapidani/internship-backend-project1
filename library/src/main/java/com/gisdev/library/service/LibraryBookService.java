@@ -1,6 +1,7 @@
 package com.gisdev.library.service;
 
 import com.gisdev.library.dto.ResponseError;
+import com.gisdev.library.dto.request.LibraryBookAddDTO;
 import com.gisdev.library.dto.response.BookLibraryStockDTO;
 import com.gisdev.library.dto.response.BookLibraryStockDTO.LibraryStock;
 import com.gisdev.library.entity.Book;
@@ -24,27 +25,27 @@ public class LibraryBookService {
     public final BookRepository bookRepository;
     public final LibraryMapper libraryMapper;
 
-    public Object addListOfBooks(List<Long> idOfBooks, Long libraryId) {
+    public Object addListOfBooks(LibraryBookAddDTO request, Long libraryId) {
 
         Library library = libraryRepository.findById(libraryId).orElse(null);
         if (library == null) {
             return new BadRequestException("Library submitted does not exist");
         }
-        for (Long bookId: idOfBooks) {
-            Book book = bookRepository.findById(bookId).orElse(null);
+        for (LibraryBookAddDTO.BookAddDTO book: request.books()) {
+            Book rbook = bookRepository.findById(book.id()).orElse(null);
             if (book == null) {
-                return new BadRequestException("Book with id " + bookId + " in the list does not exist");
+                return new BadRequestException("Book with id " + book.id() + " in the list does not exist");
             }
-            LibraryBook lb = lbRepository.findByLibraryIdAndBookId(libraryId, book.getId());
+            LibraryBook lb = lbRepository.findByLibraryIdAndBookId(libraryId, book.id());
             if (lb == null) {
                 LibraryBook newlb = LibraryBook.builder()
-                        .book(book)
+                        .book(rbook)
                         .library(library)
-                        .stock(1)
+                        .stock(book.amount())
                         .build();
                 lbRepository.save(newlb);
             } else {
-                lb.setStock(lb.getStock() + 1);
+                lb.setStock(lb.getStock() + book.amount());
                 lbRepository.save(lb);
             }
         }

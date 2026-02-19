@@ -21,7 +21,7 @@ public class LibraryBookController {
     @PutMapping("/add/{id}")
     public Object addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody LibraryBookAddDTO request) {
 
-        return lbService.addListOfBooks(request.idOfBooks(), id);
+        return lbService.addListOfBooks(request, id);
     }
 
     @GetMapping
