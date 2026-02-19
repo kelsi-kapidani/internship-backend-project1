@@ -22,11 +22,11 @@ public class BookOrder {
     private Integer size;
     private Integer value;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookId")
     @ToString.Exclude
     private Book book;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "libraryorderId")
     @ToString.Exclude
     private LibraryOrder order;

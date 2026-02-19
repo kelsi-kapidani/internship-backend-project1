@@ -21,10 +21,10 @@ public class Library {
     private String name;
     private String address;
 
-    @OneToMany
+    @OneToMany(mappedBy = "library")
     @ToString.Exclude
     private List<LibraryUser> users;
-    @OneToMany
+    @OneToMany(mappedBy = "library")
     @ToString.Exclude
     private List<LibraryBook> books;
 }

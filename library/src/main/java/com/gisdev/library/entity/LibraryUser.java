@@ -30,9 +30,12 @@ public class LibraryUser {
 
     private String email;
     private boolean active;
-    private Long libraryId;
 
-    @OneToMany
+    @ManyToOne
+    @JoinColumn(name = "libraryId")
+    private Library library;
+
+    @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private List<LibraryOrder> orders;
 

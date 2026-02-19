@@ -20,11 +20,11 @@ public class LibraryBook {
 
     private Integer stock;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookId")
     @ToString.Exclude
     private Book book;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "libraryId")
     @ToString.Exclude
     private Library library;

@@ -24,7 +24,7 @@ public class LibraryOrder {
     private Long userId;
     private String note;
 
-    @OneToMany
+    @OneToMany(mappedBy = "order")
     @ToString.Exclude
     private List<BookOrder> books;
 }
