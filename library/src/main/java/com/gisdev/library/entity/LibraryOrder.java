@@ -10,6 +10,8 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class LibraryOrder {
 
@@ -20,8 +22,9 @@ public class LibraryOrder {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private Integer OrderNumber;
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private LibraryUser user;
     private String note;
 
     @OneToMany(mappedBy = "order")
