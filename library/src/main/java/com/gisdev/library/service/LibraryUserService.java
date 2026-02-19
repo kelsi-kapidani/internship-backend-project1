@@ -1,9 +1,11 @@
 package com.gisdev.library.service;
 
 import com.gisdev.library.constants.enums.Role;
+import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.UserCreateDTO;
 import com.gisdev.library.dto.request.UserUpdateDTO;
 import com.gisdev.library.entity.LibraryUser;
+import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.LibraryUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,11 @@ public class LibraryUserService {
         return userRepository.existsByUsername(username);
     }
 
-    public boolean idExists(Long id) {
-        return userRepository.existsById(id);
-    }
+    public Object createUser(UserCreateDTO request) {
 
-    public LibraryUser createUser(UserCreateDTO request) {
-
+        if (usernameExists(request.username())) {
+            return new BadRequestException("Username already exists");
+        }
         LibraryUser user = LibraryUser.builder()
                 .name(request.name())
                 .surname(request.surname())
@@ -38,62 +39,51 @@ public class LibraryUserService {
         return userRepository.save(user);
     }
 
-    public LibraryUser getUser(Long id) {
-
-        return userRepository.findById(id).orElse(null);
-    }
-
-    public LibraryUser updateUser(Long id, UserUpdateDTO request) {
+    public Object getUser(Long id) {
 
         LibraryUser user = userRepository.findById(id).orElse(null);
-
         if (user == null) {
-            return user;
+            return new BadRequestException("User with this id does not exist");
         }
+        return user;
+    }
 
-        if (request.name() != null) {
-            user.setName(request.name());
+    public Object updateUser(Long id, UserUpdateDTO request) {
+
+        LibraryUser user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return new BadRequestException("User you are trying to update does not exist");
         }
-        if (request.surname() != null) {
-            user.setSurname(request.surname());
-        }
-        if (request.username() != null) {
-            user.setUsername(request.username());
-        }
-        if (request.password() != null) {
-            user.setPassword(request.password());
-        }
-        if (request.email() != null) {
-            user.setEmail(request.email());
-        }
-        if (request.libraryId() != null) {
-            user.setLibraryId(request.libraryId());
-        }
+        user.setName(request.name());
+        user.setSurname(request.surname());
+        user.setUsername(request.username());
+        user.setPassword(request.password());
+        user.setEmail(request.email());
+        user.setLibraryId(request.libraryId());
+
         return userRepository.save(user);
     }
 
-    public boolean setUserActive (Long id) {
+    public Object setUserActive (Long id) {
 
-        if(getUser(id) == null) {
-            return false;
+        LibraryUser user = userRepository.findById(id).orElse(null);
+        if(user == null) {
+            return new BadRequestException("User with this id does not exist");
         }
-        getUser(id).setActive(true);
-        userRepository.save(getUser(id));
-        return true;
+        user.setActive(true);
+        return userRepository.save(user);
     }
 
-    public boolean changePassword (Long id, String newpass) {
+    public Object changePassword (Long id, String newpass) {
 
-        LibraryUser user = getUser(id);
+        LibraryUser user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            return false;
+            return new BadRequestException("User with this id does not exist");
         }
-
         if (user.getPassword() == newpass) {
-            return false;
+            return new BadRequestException("This password is the old one");
         }
         user.setPassword(newpass);
-        userRepository.save(user);
-        return true;
+        return userRepository.save(user);
     }
 }

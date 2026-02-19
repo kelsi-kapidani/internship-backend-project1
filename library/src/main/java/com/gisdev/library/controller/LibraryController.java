@@ -29,27 +29,19 @@ public class LibraryController {
     @PostMapping("/create")
     public Object createLibrary(@Valid @RequestBody LibraryCreateDTO request) {
 
-        if (libraryService.nameExists(request.name())) {
-            return new ResponseError("Library with this name already exists");
-        }
         return libraryService.createLibrary(request);
     }
 
     @PutMapping("/{id}")
-    public Object updateLibrary(@PathVariable Long id, @RequestBody LibraryUpdateDTO request) {
-        if (!libraryService.idExists(id)) {
-            return new ResponseError("Library with this id does not exist");
-        }
+    public Object updateLibrary(@PathVariable Long id, @Valid @RequestBody LibraryUpdateDTO request) {
+
         return libraryService.updateLibrary(id, request);
     }
 
     @DeleteMapping("/{id}")
     public Object deleteLibrary(@PathVariable Long id) {
-        if (!libraryService.idExists(id)) {
-            return new ResponseError("Library with this id does not exist");
-        }
-        libraryService.deleteLibrary(id);
-        return new ResponseError("Deletion successfull");
+
+        return libraryService.deleteLibrary(id);
     }
 
 }

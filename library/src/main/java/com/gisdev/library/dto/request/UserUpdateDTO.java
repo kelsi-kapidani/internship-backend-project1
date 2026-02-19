@@ -1,14 +1,14 @@
 package com.gisdev.library.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public record UserUpdateDTO(
 
-    String name,
-    String surname,
-
-    String username,
-    String password,
-
-    String email,
-
-    Long libraryId
+    @NotBlank String name,
+    @NotBlank String surname,
+    @NotBlank String username,
+    @NotBlank String password,
+    @NotBlank String email,
+    @NotNull Long libraryId
 ) {}

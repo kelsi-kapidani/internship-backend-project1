@@ -1,7 +1,9 @@
 package com.gisdev.library.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record LibraryUpdateDTO(
 
-        String name,
-        String address
+        @NotBlank String name,
+        @NotBlank String address
 ) {}

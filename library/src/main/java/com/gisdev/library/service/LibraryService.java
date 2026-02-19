@@ -1,8 +1,10 @@
 package com.gisdev.library.service;
 
+import com.gisdev.library.dto.ResponseError;
 import com.gisdev.library.dto.request.LibraryCreateDTO;
 import com.gisdev.library.dto.request.LibraryUpdateDTO;
 import com.gisdev.library.entity.Library;
+import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.LibraryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,11 @@ public class LibraryService {
         return libraryRepository.existsById(id);
     }
 
-    public Library createLibrary(LibraryCreateDTO request) {
+    public Object createLibrary(LibraryCreateDTO request) {
 
+        if (nameExists(request.name())) {
+            return new BadRequestException("Library with this name already exists");
+        }
         Library library = Library.builder()
                 .name(request.name())
                 .address(request.address())
@@ -33,27 +38,26 @@ public class LibraryService {
         return libraryRepository.save(library);
     }
 
-    public Library updateLibrary(Long id, LibraryUpdateDTO request) {
+    public Object updateLibrary(Long id, LibraryUpdateDTO request) {
 
         Library library = libraryRepository.findById(id).orElse(null);
 
         if (library == null) {
-            return library;
+            return new BadRequestException("Library with this id does not exist");
         }
-
-        if (request.name() != null) {
-           library.setName(request.name());
-        }
-        if (request.address() != null) {
-            library.setAddress(request.address());
-        }
+        library.setName(request.name());
+        library.setAddress(request.address());
 
         return libraryRepository.save(library);
     }
 
-    public void deleteLibrary(Long id) {
+    public Object deleteLibrary(Long id) {
 
+        if (idExists(id)) {
+            return new ResponseError("Library with this id does not exist");
+        }
         libraryRepository.deleteById(id);
+        return new ResponseError("Deletion successfull");
     }
 
     public List<Library> getAllLibraries() {

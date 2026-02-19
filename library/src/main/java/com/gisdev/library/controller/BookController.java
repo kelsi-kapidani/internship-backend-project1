@@ -22,19 +22,11 @@ public class BookController {
     @PostMapping("/create")
     public Object createBook(@Valid @RequestBody BookCreateDTO request) {
 
-        if (bookService.titleExists(request.title())) {
-            return new ResponseError("Book with this title already exists");
-        }
-
         return bookService.createBook(request);
     }
 
     @PutMapping("/{id}")
-    public Object updateBook(@PathVariable Long id, @RequestBody BookUpdateDTO request) {
-
-        if (!bookService.idExists(id)) {
-            return new ResponseError("Book with this id does not exist");
-        }
+    public Object updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdateDTO request) {
 
         return bookService.updateBook(id, request);
     }
@@ -42,12 +34,7 @@ public class BookController {
     @DeleteMapping("/{id}")
     public Object deleteBook(@PathVariable Long id) {
 
-        if (!bookService.idExists(id)) {
-                return new BadRequestException("Book with this id does not exist");
-        }
-
-        bookService.deleteBook(id);
-        return new ResponseError("Deletion successful");
+        return bookService.deleteBook(id);
     }
 
     @GetMapping("/all")
