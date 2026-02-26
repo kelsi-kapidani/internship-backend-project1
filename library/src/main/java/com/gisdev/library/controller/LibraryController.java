@@ -1,11 +1,12 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.LibraryCreateDTO;
-import com.gisdev.library.dto.request.LibraryUpdateDTO;
-import com.gisdev.library.dto.response.LibraryDTO;
+import com.gisdev.library.dto.request.library.LibraryCUDTO;
+import com.gisdev.library.dto.response.library.LibraryDTO;
 import com.gisdev.library.service.LibraryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,21 +27,21 @@ public class LibraryController {
     }
 
     @PostMapping("/create")
-    public Object createLibrary(@Valid @RequestBody LibraryCreateDTO request) {
+    public ResponseEntity<Long> createLibrary(@Valid @RequestBody LibraryCUDTO request) {
 
-        return libraryService.createLibrary(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(libraryService.createLibrary(request));
     }
 
     @PutMapping("/{id}")
-    public Object updateLibrary(@PathVariable Long id, @Valid @RequestBody LibraryUpdateDTO request) {
+    public ResponseEntity<Long> updateLibrary(@PathVariable Long id, @Valid @RequestBody LibraryCUDTO request) {
 
-        return libraryService.updateLibrary(id, request);
+        return ResponseEntity.ok(libraryService.updateLibrary(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public Object deleteLibrary(@PathVariable Long id) {
+    public ResponseEntity<Long> deleteLibrary(@PathVariable Long id) {
 
-        return libraryService.deleteLibrary(id);
+        return ResponseEntity.ok(libraryService.deleteLibrary(id));
     }
 
 }

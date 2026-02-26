@@ -1,6 +1,7 @@
-package com.gisdev.library.dto.response;
+package com.gisdev.library.dto.response.user;
 
 import com.gisdev.library.constants.enums.Role;
+import com.gisdev.library.dto.response.library.ShortLibraryDTO;
 
 public record UserDTO(
 
@@ -8,17 +9,8 @@ public record UserDTO(
         String name,
         String surname,
         String username,
-        String password,
         String email,
         boolean active,
         Role role,
-        UserLibraryDTO library
-) {
-
-    public record UserLibraryDTO(
-
-            Long id,
-            String name,
-            String address
-    ) {}
-}
+        ShortLibraryDTO library
+) {}

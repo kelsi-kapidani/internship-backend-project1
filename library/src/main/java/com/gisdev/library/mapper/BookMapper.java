@@ -1,8 +1,9 @@
 package com.gisdev.library.mapper;
-import com.gisdev.library.dto.request.BookCreateDTO;
-import com.gisdev.library.dto.request.BookUpdateDTO;
-import com.gisdev.library.dto.response.BookDTO;
-import com.gisdev.library.dto.response.LibraryDTO;
+import com.gisdev.library.dto.request.book.BookCUDTO;
+import com.gisdev.library.dto.response.book.BookDTO;
+import com.gisdev.library.dto.response.bookorder.BookOrderDTO;
+import com.gisdev.library.dto.response.library.ShortLibraryDTO;
+import com.gisdev.library.dto.response.order.ShortOrderDTO;
 import com.gisdev.library.entity.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,27 +21,27 @@ public interface BookMapper {
 
     @Mapping(target = "libraries", ignore = true)
     @Mapping(target = "orders", ignore = true)
-    Book toEntity(BookCreateDTO dto);
+    Book toEntity(BookCUDTO dto);
 
-    default List<BookDTO.BookLibrariesDTO> mapLibraries(Book book) {
+    default List<ShortLibraryDTO> mapLibraries(Book book) {
 
         return book.getLibraries().stream()
                 .map(lb -> {
                     var lib = lb.getLibrary();
                     if (lib == null) return null;
-                    return new BookDTO.BookLibrariesDTO(lib.getId(), lib.getName(), lib.getAddress());
+                    return new ShortLibraryDTO(lib.getId(), lib.getName(), lib.getAddress());
                 }).collect(Collectors.toList());
     }
 
-    default List<BookDTO.BookOrdersDTO> mapOrders(Book book) {
+    default List<ShortOrderDTO> mapOrders(Book book) {
 
         return book.getOrders().stream()
                 .map(or -> {
                     var order = or.getOrder();
                     if (order == null) return null;
-                    return new BookDTO.BookOrdersDTO(order.getId(), order.getStatus());
+                    return new ShortOrderDTO(order.getId(), order.getStatus());
                 }).collect(Collectors.toList());
     }
 
-    void updateBookFromDto(BookUpdateDTO dto, @MappingTarget Book entity);
+    void updateBookFromDto(BookCUDTO dto, @MappingTarget Book entity);
 }

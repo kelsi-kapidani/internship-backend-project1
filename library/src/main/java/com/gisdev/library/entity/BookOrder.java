@@ -7,26 +7,21 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class BookOrder {
+public class BookOrder extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(nullable = false)
     private Integer size;
+    @Column(nullable = false)
     private Integer value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bookId")
-    @ToString.Exclude
+    @JoinColumn(name = "book_id")
     private Book book;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "libraryorderId")
-    @ToString.Exclude
+    @JoinColumn(name = "library_order_id")
     private LibraryOrder order;
 }

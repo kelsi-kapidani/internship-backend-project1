@@ -1,8 +1,9 @@
 package com.gisdev.library.mapper;
 
-import com.gisdev.library.dto.request.LibraryCreateDTO;
-import com.gisdev.library.dto.request.LibraryUpdateDTO;
-import com.gisdev.library.dto.response.LibraryDTO;
+import com.gisdev.library.dto.request.library.LibraryCUDTO;
+import com.gisdev.library.dto.response.book.ShortBookDTO;
+import com.gisdev.library.dto.response.library.LibraryDTO;
+import com.gisdev.library.dto.response.user.ShortUserDTO;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryUser;
@@ -22,14 +23,14 @@ public interface LibraryMapper {
 
     @Mapping(target = "users", ignore = true)
     @Mapping(target = "books", ignore = true)
-    Library toEntity(LibraryCreateDTO dto);
+    Library toEntity(LibraryCUDTO dto);
 
 
-    LibraryDTO.LibraryBooksDTO toBookDto(Book book);
+    ShortBookDTO toBookDto(Book book);
 
-    LibraryDTO.LibraryUsersDTO toUserDto(LibraryUser user);
+    ShortUserDTO toUserDto(LibraryUser user);
 
-    default List<LibraryDTO.LibraryUsersDTO> mapUsers(Library library) {
+    default List<ShortUserDTO> mapUsers(Library library) {
 
         return library.getUsers().stream()
                 .map(u -> {
@@ -38,7 +39,7 @@ public interface LibraryMapper {
                 }).collect(Collectors.toList());
     }
 
-    default List<LibraryDTO.LibraryBooksDTO> mapBooks(Library library) {
+    default List<ShortBookDTO> mapBooks(Library library) {
 
         return library.getBooks().stream()
                 .map(b -> {
@@ -48,5 +49,5 @@ public interface LibraryMapper {
                 }).collect(Collectors.toList());
     }
 
-    void updateLibraryFromDto(LibraryUpdateDTO dto, @MappingTarget Library entity);
+    void updateLibraryFromDto(LibraryCUDTO dto, @MappingTarget Library entity);
 }

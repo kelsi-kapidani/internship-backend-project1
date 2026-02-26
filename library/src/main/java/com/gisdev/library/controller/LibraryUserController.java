@@ -1,17 +1,18 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.UserCreateDTO;
-import com.gisdev.library.dto.request.UserUpdateDTO;
-import com.gisdev.library.entity.LibraryUser;
+import com.gisdev.library.dto.request.user.UserCUDTO;
 import com.gisdev.library.service.LibraryUserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.core.Response;
 
 @RestController
 @RequestMapping("/user")
@@ -23,9 +24,9 @@ public class LibraryUserController {
     public final LibraryUserService userService;
 
     @PostMapping("/create")
-    public Object createUser(@Valid @RequestBody UserCreateDTO request) {
+    public ResponseEntity<Long> createUser(@Valid @RequestBody UserCUDTO request) {
 
-        return userService.createUser(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
     }
 
     @GetMapping("/{id}")
@@ -35,19 +36,19 @@ public class LibraryUserController {
     }
 
     @PutMapping("/{id}")
-    public Object updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO request) {
+    public ResponseEntity<Long> updateUser(@PathVariable Long id, @Valid @RequestBody UserCUDTO request) {
 
-        return userService.updateUser(id,request);
+        return ResponseEntity.ok(userService.updateUser(id,request));
     }
 
     @PatchMapping("/activate/{id}")
-    public Object activateUser(@PathVariable Long id) {
+    public ResponseEntity<Long> activateUser(@PathVariable Long id) {
 
-        return userService.setUserActive(id);
+        return ResponseEntity.ok(userService.setUserActive(id));
     }
 
     @PatchMapping("/password/{id}")
-    public Object changePassword(
+    public ResponseEntity<Long> changePassword(
             @PathVariable Long id,
             @NotBlank(message = "Password is empty")
             @Pattern(
@@ -56,6 +57,6 @@ public class LibraryUserController {
             )
             String password) {
 
-        return userService.changePassword(id, password);
+        return ResponseEntity.ok(userService.changePassword(id, password));
     }
 }

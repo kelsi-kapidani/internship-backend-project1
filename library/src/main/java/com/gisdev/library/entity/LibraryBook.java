@@ -7,26 +7,20 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class LibraryBook {
+public class LibraryBook extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(nullable = false)
     private Integer stock;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bookId")
-    @ToString.Exclude
+    @JoinColumn(name = "book_id")
     private Book book;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "libraryId")
-    @ToString.Exclude
+    @JoinColumn(name = "library_id")
     private Library library;
 
 }

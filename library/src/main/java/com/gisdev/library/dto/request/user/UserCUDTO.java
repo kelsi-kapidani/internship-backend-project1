@@ -1,8 +1,8 @@
-package com.gisdev.library.dto.request;
+package com.gisdev.library.dto.request.user;
 
 import jakarta.validation.constraints.*;
 
-public record UserCreateDTO(
+public record UserCUDTO(
 
     @NotBlank(message = "Name is required")
     String name,
@@ -26,5 +26,5 @@ public record UserCreateDTO(
     String email,
 
     @NotNull(message = "Library id is required")
-    Long libraryId
+    Long library_id
 )   {}

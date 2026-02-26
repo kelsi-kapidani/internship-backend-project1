@@ -10,32 +10,33 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-public class LibraryUser {
+public class LibraryUser extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
 
+    @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private boolean active;
 
-    @ManyToOne
-    @JoinColumn(name = "libraryId")
+    @ManyToOne()
+    @JoinColumn(name = "library_id")
     private Library library;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<LibraryOrder> orders;
 

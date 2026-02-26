@@ -1,4 +1,4 @@
-package com.gisdev.library.dto.request;
+package com.gisdev.library.dto.request.librarybook;
 
 import jakarta.validation.constraints.NotNull;
 

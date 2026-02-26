@@ -7,24 +7,17 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Entity
-public class Library {
+public class Library extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "library")
-    @ToString.Exclude
+    @OneToMany(mappedBy = "library", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryUser> users;
-    @OneToMany(mappedBy = "library")
-    @ToString.Exclude
+    @OneToMany(mappedBy = "library", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryBook> books;
 }

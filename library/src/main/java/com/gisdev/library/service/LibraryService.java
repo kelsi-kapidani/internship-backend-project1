@@ -1,17 +1,13 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.ResponseError;
-import com.gisdev.library.dto.request.LibraryCreateDTO;
-import com.gisdev.library.dto.request.LibraryUpdateDTO;
-import com.gisdev.library.dto.response.BookDTO;
-import com.gisdev.library.dto.response.LibraryDTO;
-import com.gisdev.library.entity.Book;
+import com.gisdev.library.dto.request.library.LibraryCUDTO;
+import com.gisdev.library.dto.response.library.LibraryDTO;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.mapper.LibraryMapper;
 import com.gisdev.library.repository.LibraryRepository;
+import com.gisdev.library.service.iservice.ILibraryService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,49 +15,55 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LibraryService {
+public class LibraryService implements ILibraryService {
 
     public final LibraryRepository libraryRepository;
     public final LibraryMapper libraryMapper;
 
+    @Override
     public boolean nameExists(String username) {
         return libraryRepository.existsByName(username);
     }
 
+    @Override
     public boolean idExists(Long id) {
         return libraryRepository.existsById(id);
     }
 
-    public Object createLibrary(LibraryCreateDTO request) {
+    @Override
+    public Long createLibrary(LibraryCUDTO request) {
 
         if (nameExists(request.name())) {
-            return new BadRequestException("Library with this name already exists");
+            throw new BadRequestException("Library with this name already exists");
         }
         Library library = libraryMapper.toEntity(request);
         libraryRepository.save(library);
-        return new ResponseError("Library created successfully");
+        return library.getId();
     }
 
-    public Object updateLibrary(Long id, LibraryUpdateDTO request) {
+    @Override
+    public Long updateLibrary(Long id, LibraryCUDTO request) {
 
         Library library = libraryRepository.findById(id).orElse(null);
         if (library == null) {
-            return new BadRequestException("Library with this id does not exist");
+            throw new BadRequestException("Library with this id does not exist");
         }
         libraryMapper.updateLibraryFromDto(request, library);
         libraryRepository.save(library);
-        return new ResponseError("Library updated successfully");
+        return id;
     }
 
-    public Object deleteLibrary(Long id) {
+    @Override
+    public Long deleteLibrary(Long id) {
 
         if (idExists(id)) {
-            return new ResponseError("Library with this id does not exist");
+            throw new BadRequestException("Library with this id does not exist");
         }
         libraryRepository.deleteById(id);
-        return new ResponseError("Deletion successfull");
+        return id;
     }
 
+    @Override
     public List<LibraryDTO> getAllLibraries() {
 
         List<LibraryDTO> response = new ArrayList<>();

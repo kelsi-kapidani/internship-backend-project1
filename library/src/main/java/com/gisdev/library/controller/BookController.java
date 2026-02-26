@@ -1,11 +1,12 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.BookCreateDTO;
-import com.gisdev.library.dto.request.BookUpdateDTO;
-import com.gisdev.library.dto.response.BookDTO;
+import com.gisdev.library.dto.request.book.BookCUDTO;
+import com.gisdev.library.dto.response.book.BookDTO;
 import com.gisdev.library.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,26 +19,26 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping("/create")
-    public Object createBook(@Valid @RequestBody BookCreateDTO request) {
+    public ResponseEntity<Long> createBook(@Valid @RequestBody BookCUDTO request) {
 
-        return bookService.createBook(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookService.createBook(request));
     }
 
     @PutMapping("/{id}")
-    public Object updateBook(@PathVariable Long id, @Valid @RequestBody BookUpdateDTO request) {
+    public ResponseEntity<Long> updateBook(@PathVariable Long id, @Valid @RequestBody BookCUDTO request) {
 
-        return bookService.updateBook(id, request);
+        return ResponseEntity.ok(bookService.updateBook(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public Object deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Long> deleteBook(@PathVariable Long id) {
 
-        return bookService.deleteBook(id);
+        return ResponseEntity.ok(bookService.deleteBook(id));
     }
 
     @GetMapping("/all")
-    public List<BookDTO> getAllBooks() {
+    public List<BookDTO> getAllBooks( @RequestParam(required = false) List<String> filter, @RequestParam(required = false) String sort) {
 
-        return bookService.getAllBooks();
+        return bookService.getAllBooks(filter, sort);
     }
 }

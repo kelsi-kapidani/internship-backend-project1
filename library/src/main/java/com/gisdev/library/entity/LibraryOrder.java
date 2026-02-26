@@ -8,17 +8,13 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class LibraryOrder {
+public class LibraryOrder extends BaseEntity{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -28,6 +24,5 @@ public class LibraryOrder {
     private String note;
 
     @OneToMany(mappedBy = "order")
-    @ToString.Exclude
     private List<BookOrder> books;
 }

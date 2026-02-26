@@ -1,8 +1,8 @@
 package com.gisdev.library.mapper;
 
-import com.gisdev.library.dto.request.UserCreateDTO;
-import com.gisdev.library.dto.request.UserUpdateDTO;
-import com.gisdev.library.dto.response.UserDTO;
+import com.gisdev.library.dto.request.user.UserCUDTO;
+import com.gisdev.library.dto.response.library.ShortLibraryDTO;
+import com.gisdev.library.dto.response.user.UserDTO;
 import com.gisdev.library.entity.LibraryUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,13 +18,13 @@ public interface UserMapper {
     @Mapping(target = "active", constant = "false")
     @Mapping(target = "role", constant = "USER")
     @Mapping(target = "library", ignore = true)
-    LibraryUser toEntity(UserCreateDTO dto);
+    LibraryUser toEntity(UserCUDTO dto);
 
     @Mapping(target = "library", ignore = true)
-    void updateUserFromDto(UserUpdateDTO dto, @MappingTarget LibraryUser entity);
+    void updateUserFromDto(UserCUDTO dto, @MappingTarget LibraryUser entity);
 
-    default UserDTO.UserLibraryDTO mapLibrary (LibraryUser user) {
+    default ShortLibraryDTO mapLibrary (LibraryUser user) {
         var lib = user.getLibrary();
-        return new UserDTO.UserLibraryDTO(lib.getId(), lib.getName(), lib.getAddress());
+        return new ShortLibraryDTO(lib.getId(), lib.getName(), lib.getAddress());
     }
 }
