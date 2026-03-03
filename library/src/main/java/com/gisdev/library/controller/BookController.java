@@ -3,6 +3,7 @@ package com.gisdev.library.controller;
 import com.gisdev.library.dto.request.book.BookCUDTO;
 import com.gisdev.library.dto.response.book.BookDTO;
 import com.gisdev.library.service.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class BookController {
     }
 
     @GetMapping("/all")
+    @Operation(description = "Allowed operations for filtering:  \"eq\", \"neq\", \"gt\", \"geq\", \"lt\", \"leq\", \"ilike\"  \n" +
+                             "Allowed sorting fields: \"title\", \"author\", \"genre\", \"section\", \"price\", \"year_of_publication\" ")
     public List<BookDTO> getAllBooks( @RequestParam(required = false) List<String> filter, @RequestParam(required = false) String sort) {
 
         return bookService.getAllBooks(filter, sort);
