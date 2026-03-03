@@ -21,9 +21,9 @@ public class LibraryController {
     public final LibraryService libraryService;
 
     @GetMapping("/all")
-    public List<LibraryDTO> getAllLibraries () {
+    public List<LibraryDTO> getAllLibraries (@RequestParam(required = false) String name, @RequestParam(required = false) String address) {
 
-        return libraryService.getAllLibraries();
+        return libraryService.getAllLibraries(name, address);
     }
 
     @PostMapping("/create")

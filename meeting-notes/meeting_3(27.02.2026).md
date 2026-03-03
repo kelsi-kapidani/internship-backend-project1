@@ -9,5 +9,5 @@
 * krijo swagger
 * native query (ndryshoi nje rast)  -------
 * shiko seriazible
-* orelsethrow optional return type i findbyId
+* orelsethrow optional return type i findbyId  -------
 * debugging

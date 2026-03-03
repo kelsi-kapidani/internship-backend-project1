@@ -17,5 +17,5 @@ public interface ILibraryService {
 
     Long deleteLibrary(Long id);
 
-    List<LibraryDTO> getAllLibraries();
+    List<LibraryDTO> getAllLibraries(String name, String address);
 }

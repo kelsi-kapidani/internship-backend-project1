@@ -9,6 +9,7 @@ import com.gisdev.library.repository.LibraryRepository;
 import com.gisdev.library.service.iservice.ILibraryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,10 @@ public class LibraryService implements ILibraryService {
     }
 
     @Override
-    public List<LibraryDTO> getAllLibraries() {
+    public List<LibraryDTO> getAllLibraries(String name, String address) {
 
         List<LibraryDTO> response = new ArrayList<>();
-        for (Library library: libraryRepository.findAll()) {
+        for (Library library: libraryRepository.findAllWithFilters(name, address)) {
             response.add(libraryMapper.toDto(library));
         }
         return response;
