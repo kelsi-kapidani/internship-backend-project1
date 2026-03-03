@@ -31,10 +31,7 @@ public class LibraryUserService implements ILibraryUserService {
         if (usernameExists(request.username())) {
             throw new BadRequestException("Username already exists");
         }
-        Library library = libraryRepository.findById(request.library_id()).orElse(null);
-        if (library == null) {
-            throw new BadRequestException("Library of the user does not exist");
-        }
+        Library library = libraryRepository.findById(request.library_id()).orElseThrow(() -> new BadRequestException("Library of the user does not exist"));
         LibraryUser user = userMapper.toEntity(request);
         user.setLibrary(library);
         userRepository.save(user);
@@ -44,24 +41,15 @@ public class LibraryUserService implements ILibraryUserService {
     @Override
     public Object getUser(Long id) {
 
-        LibraryUser user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new BadRequestException("User with this id does not exist");
-        }
+        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
         return userMapper.toDto(user);
     }
 
     @Override
     public Long updateUser(Long id, UserCUDTO request) {
 
-        LibraryUser user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new BadRequestException("User you are trying to update does not exist");
-        }
-        Library library = libraryRepository.findById(request.library_id()).orElse(null);
-        if (library == null) {
-            throw new BadRequestException("Library of the user does not exist");
-        }
+        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User you are trying to update does not exist"));
+        Library library = libraryRepository.findById(request.library_id()).orElseThrow(() -> new BadRequestException("Library of the user does not exist"));
         userMapper.updateUserFromDto(request, user);
         user.setLibrary(library);
         userRepository.save(user);
@@ -71,10 +59,7 @@ public class LibraryUserService implements ILibraryUserService {
     @Override
     public Long setUserActive (Long id) {
 
-        LibraryUser user = userRepository.findById(id).orElse(null);
-        if(user == null) {
-            throw new BadRequestException("User with this id does not exist");
-        }
+        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
         user.setActive(true);
         userRepository.save(user);
         return id;
@@ -83,10 +68,7 @@ public class LibraryUserService implements ILibraryUserService {
     @Override
     public Long changePassword (Long id, String newpass) {
 
-        LibraryUser user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new BadRequestException("User with this id does not exist");
-        }
+        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
         if (user.getPassword().equals(newpass)) {
             throw new BadRequestException("This password is the old one");
         }

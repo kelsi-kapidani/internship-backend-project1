@@ -44,10 +44,7 @@ public class LibraryService implements ILibraryService {
     @Override
     public Long updateLibrary(Long id, LibraryCUDTO request) {
 
-        Library library = libraryRepository.findById(id).orElse(null);
-        if (library == null) {
-            throw new BadRequestException("Library with this id does not exist");
-        }
+        Library library = libraryRepository.findById(id).orElseThrow(() -> new BadRequestException("Library with this id does not exist"));
         libraryMapper.updateLibraryFromDto(request, library);
         libraryRepository.save(library);
         return id;

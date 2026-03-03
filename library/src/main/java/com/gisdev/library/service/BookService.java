@@ -44,10 +44,7 @@ public class BookService implements IBookService {
     @Override
     public Long updateBook(Long id, BookCUDTO request) {
 
-        Book book = bookRepository.findById(id).orElse(null);
-        if (book == null) {
-            throw new BadRequestException("Book with this id does not exist");
-        }
+        Book book = bookRepository.findById(id).orElseThrow(() -> new BadRequestException("Book with this id does not exist"));
 
         bookMapper.updateBookFromDto(request, book);
         bookRepository.save(book);

@@ -30,10 +30,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     @Override
     public Long createOrder(Long id, OrderCreateDTO request) {
 
-        LibraryUser user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new BadRequestException("User with this id does not exist");
-        }
+        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
         LibraryOrder order = LibraryOrder.builder()
                 .status(Status.NE_PRITJE)
                 .user(user)
@@ -41,10 +38,7 @@ public class LibraryOrderService implements ILibraryOrderService {
         orderRepository.save(order);
         Library library = user.getLibrary();
         for (OrderCreateDTO.BookOrderRequest borequest: request.books()) {
-            Book book = bookRepository.findById(borequest.bookId()).orElse(null);
-            if (book == null) {
-                throw new BadRequestException("Book in the list with id" + borequest.bookId()+ "does not exist");
-            }
+            Book book = bookRepository.findById(borequest.bookId()).orElseThrow(() -> new BadRequestException("Book in the list with id" + borequest.bookId()+ "does not exist"));
             LibraryBook lb = lbRepository.findByLibraryIdAndBookId(library.getId(),book.getId());
             if (lb == null) {
                 throw new BadRequestException("There is no stock of book" +book.getId() + "in the user's library");
@@ -66,10 +60,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     @Override
     public Long updateOrder(Long id, OrderUpdateDTO request) {
 
-        LibraryOrder order = orderRepository.findById(id).orElse(null);
-        if (order == null) {
-            throw new BadRequestException("This order does not exist");
-        }
+        LibraryOrder order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException("This order does not exist"));
         order.setStatus(request.status());
         if (request.note() != null) {
             order.setNote(request.note());

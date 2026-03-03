@@ -7,7 +7,7 @@
 * Per filtra ndoshta perdor query jo specifications
 * RequestParams jo liste po secila me vete e definuar per cdo fushe
 * krijo swagger
-* native query (ndryshoi nje rast)
+* native query (ndryshoi nje rast)  -------
 * shiko seriazible
 * orelsethrow optional return type i findbyId
 * debugging

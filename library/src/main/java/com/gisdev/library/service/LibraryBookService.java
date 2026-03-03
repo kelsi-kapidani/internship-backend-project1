@@ -28,12 +28,9 @@ public class LibraryBookService implements ILibraryBookService {
     @Override
     public Long addListOfBooks(LibraryBookAddDTO request, Long libraryId) {
 
-        Library library = libraryRepository.findById(libraryId).orElse(null);
-        if (library == null) {
-            throw new BadRequestException("Library submitted does not exist");
-        }
+        Library library = libraryRepository.findById(libraryId).orElseThrow(() -> new BadRequestException("Library submitted does not exist"));
         for (LibraryBookAddDTO.BookAddDTO book: request.books()) {
-            Book rbook = bookRepository.findById(book.id()).orElse(null);
+            Book rbook = bookRepository.findById(book.id()).orElseThrow(() -> new BadRequestException("Book with id " + book.id() + " in the list does not exist"));
             if (book == null) {
                 throw new BadRequestException("Book with id " + book.id() + " in the list does not exist");
             }
