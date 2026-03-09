@@ -25,7 +25,6 @@ public interface LibraryMapper {
     @Mapping(target = "books", ignore = true)
     Library toEntity(LibraryCUDTO dto);
 
-
     ShortBookDTO toBookDto(Book book);
 
     ShortUserDTO toUserDto(LibraryUser user);

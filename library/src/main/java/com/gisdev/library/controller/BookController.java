@@ -1,5 +1,6 @@
 package com.gisdev.library.controller;
 
+import com.gisdev.library.apiAuth.BookControllerDocs;
 import com.gisdev.library.dto.request.book.BookCUDTO;
 import com.gisdev.library.dto.response.book.BookDTO;
 import com.gisdev.library.service.BookService;
@@ -39,8 +40,9 @@ public class BookController {
     }
 
     @GetMapping("/all")
-    @Operation(description = "Allowed operations for filtering:  \"eq\", \"neq\", \"gt\", \"geq\", \"lt\", \"leq\", \"ilike\"  \n" +
-                             "Allowed sorting fields: \"title\", \"author\", \"genre\", \"section\", \"price\", \"year_of_publication\" ")
+    @BookControllerDocs.CreateClientDoc
+    //@Operation(description = "Allowed operations for filtering:  \"eq\", \"neq\", \"gt\", \"geq\", \"lt\", \"leq\", \"ilike\"  \n" +
+              //               "Allowed sorting fields: \"title\", \"author\", \"genre\", \"section\", \"price\", \"year_of_publication\" ")
     public List<BookDTO> getAllBooks( @RequestParam(required = false) List<String> filter, @RequestParam(required = false) String sort) {
 
         return bookService.getAllBooks(filter, sort);
