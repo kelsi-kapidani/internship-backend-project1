@@ -4,7 +4,7 @@
 
 ## Shenime
 
-* pa param ne argumnet te repo query dfunction dhe therriten me query me ? ndjekur nga order i argumentit jo aq optimale sa @Param
+* pa param ne argument te repo query function dhe therriten me query me ? ndjekur nga order i argumentit jo aq optimale sa @Param
 * me native sql mund ta marresh query dhe ta testosh drejtperdrejte ne postgress db
 * look at json util class message dhe modelmapper library
 * clientbookcontrollerdocs per swagger customization
