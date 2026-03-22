@@ -24,7 +24,7 @@ public record BookDTO(
         @Schema(example = "1000")
         String price,
         @Schema(example = "2026-03-03")
-        LocalDate yearOfPublication,
+        LocalDate year_of_publication,
         List<ShortOrderDTO> orders,
         List<ShortLibraryDTO> libraries
 ) {}

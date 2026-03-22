@@ -17,11 +17,11 @@ public class LibraryOrder extends BaseEntity{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "userId")
     private LibraryUser user;
-    private String note;
 
     @OneToMany(mappedBy = "order")
     private List<BookOrder> books;

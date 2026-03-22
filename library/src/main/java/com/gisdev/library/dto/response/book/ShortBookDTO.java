@@ -13,5 +13,5 @@ public record ShortBookDTO(
         Genre genre,
         Section section,
         String price,
-        LocalDate yearOfPublication
+        LocalDate year_of_publication
 ) {}

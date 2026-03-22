@@ -21,6 +21,7 @@ import java.util.List;
 public class LibraryOrderService implements ILibraryOrderService {
 
     public final LibraryOrderRepository orderRepository;
+    public final LibraryRepository libraryRepository;
     public final LibraryUserRepository userRepository;
     public final LibraryBookRepository lbRepository;
     public final BookOrderRepository boRepository;
@@ -38,13 +39,18 @@ public class LibraryOrderService implements ILibraryOrderService {
         orderRepository.save(order);
         Library library = user.getLibrary();
         for (OrderCreateDTO.BookOrderRequest borequest: request.books()) {
-            Book book = bookRepository.findById(borequest.bookId()).orElseThrow(() -> new BadRequestException("Book in the list with id" + borequest.bookId()+ "does not exist"));
+            Book book = bookRepository.findById(borequest.bookId()).orElseGet(() -> {
+                orderRepository.delete(order);
+                throw new BadRequestException("Book in the list with id" + borequest.bookId() + "does not exist");
+            });
             LibraryBook lb = lbRepository.findByLibraryIdAndBookId(library.getId(),book.getId());
             if (lb == null) {
-                throw new BadRequestException("There is no stock of book" +book.getId() + "in the user's library");
+                orderRepository.delete(order);
+                throw new BadRequestException("There is no stock of book " +book.getId() + " in the user's library");
             }
-            if (lb.getStock()< borequest.amount()) {
-                throw new BadRequestException("There is not enough stock of book" + book.getId() + "in the user's library");
+            if (lb.getStock() < borequest.amount()) {
+                orderRepository.delete(order);
+                throw new BadRequestException("There is not enough stock of book " + book.getId() + " in the user's library");
             }
             BookOrder bo = BookOrder.builder()
                     .book(book)
@@ -60,11 +66,31 @@ public class LibraryOrderService implements ILibraryOrderService {
     @Override
     public Long updateOrder(Long id, OrderUpdateDTO request) {
 
-        LibraryOrder order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException("This order does not exist"));
-        order.setStatus(request.status());
-        if (request.note() != null) {
-            order.setNote(request.note());
+        if (request.status() == Status.NE_PRITJE) {
+            throw new BadRequestException("You can not send order's status to pending");
         }
+        LibraryOrder order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException("This order does not exist"));
+        if (order.getStatus() != Status.NE_PRITJE) {
+            throw new BadRequestException("This order's status cannot be changed");
+        }
+        if (request.status() == Status.PRANUAR) {
+            Library library = libraryRepository.findById(order.getUser().getId()).orElseThrow(() -> new BadRequestException("Could not find library of the order's user"));
+            for (BookOrder bo: order.getBooks()) {
+                LibraryBook currentBook = lbRepository.findByLibraryIdAndBookId(library.getId(), bo.getBook().getId());
+                Integer currentStock = currentBook.getStock();
+                Integer currentSize = bo.getSize();
+                if(currentStock >= currentSize) {
+                    currentBook.setStock(currentStock - currentSize);
+                } else {
+                    throw new BadRequestException("Order cannot be accepted as the stock of book " + bo.getBook().getId() + " in the library is not enough");
+                }
+            }
+        } else {
+            if (request.note() != null) {
+                order.setNote(request.note());
+            }
+        }
+        order.setStatus(request.status());
         orderRepository.save(order);
         return id;
     }

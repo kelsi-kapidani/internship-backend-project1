@@ -54,7 +54,7 @@ public class LibraryService implements ILibraryService {
     @Override
     public Long deleteLibrary(Long id) {
 
-        if (idExists(id)) {
+        if (!idExists(id)) {
             throw new BadRequestException("Library with this id does not exist");
         }
         libraryRepository.deleteById(id);

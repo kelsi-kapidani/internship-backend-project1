@@ -72,16 +72,16 @@ public class BookService implements IBookService {
 
     public Sort genSort(String sort) {
         if (sort == null || sort.isEmpty()) {
-            return Sort.by("title").ascending();
+            return Sort.by("title").descending();
         }
         String[] parts = sort.split(":");
         if(!allowedFields.contains(parts[0])) {
             throw new BadRequestException("The sorting field is not legal");
         }
         if(parts[1].equals("asc")) {
-            return Sort.by(parts[0]).ascending();
+            return Sort.by(parts[0]).descending();
         }
-        return Sort.by(parts[0]).descending();
+        return Sort.by(parts[0]).ascending();
     }
 
     public Specification<Book> genSpecs(List<String> filters) {
