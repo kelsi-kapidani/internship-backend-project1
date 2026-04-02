@@ -12,6 +12,8 @@ import com.gisdev.library.service.iservice.ILibraryUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class LibraryUserService implements ILibraryUserService {
@@ -23,6 +25,11 @@ public class LibraryUserService implements ILibraryUserService {
     @Override
     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Optional<LibraryUser> getUserById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Override

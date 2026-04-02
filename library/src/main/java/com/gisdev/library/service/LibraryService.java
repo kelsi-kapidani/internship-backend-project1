@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,11 @@ public class LibraryService implements ILibraryService {
     @Override
     public boolean idExists(Long id) {
         return libraryRepository.existsById(id);
+    }
+
+    @Override
+    public Optional<Library> getLibraryById(Long id) {
+        return libraryRepository.findById(id);
     }
 
     @Override

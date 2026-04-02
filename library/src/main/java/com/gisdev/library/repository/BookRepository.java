@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
@@ -17,4 +19,12 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
             nativeQuery = true
     )
     boolean existsByTitle(@Param("title") String title);
+
+    //"x3 text block that allows multi-lines -> better readability
+    @Query("""
+    SELECT DISTINCT b FROM Book b
+    LEFT JOIN FETCH b.libraries lb
+    LEFT JOIN FETCH lb.library
+    """)
+    List<Book> findAllWithLibraryBooks();
 }

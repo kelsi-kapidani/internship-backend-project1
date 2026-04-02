@@ -1,12 +1,16 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.dto.request.librarybook.LibraryBookAddDTO;
+import com.gisdev.library.dto.request.librarybook.LibraryBookDTO;
 import com.gisdev.library.dto.response.librarybook.LibraryBookStockDTO;
+import com.gisdev.library.entity.LibraryBook;
 
 import java.util.List;
 
 public interface ILibraryBookService {
-    Long addListOfBooks(LibraryBookAddDTO request, Long libraryId);
+
+    LibraryBook getLibraryBookByIds(Long bookId, Long libraryId);
+
+    Long addListOfBooks(LibraryBookDTO request, Long libraryId);
 
     List<LibraryBookStockDTO> getAllBookStocks();
 }

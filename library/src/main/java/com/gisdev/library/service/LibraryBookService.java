@@ -1,6 +1,6 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.request.librarybook.LibraryBookAddDTO;
+import com.gisdev.library.dto.request.librarybook.LibraryBookDTO;
 import com.gisdev.library.dto.response.librarybook.LibraryBookStockDTO;
 import com.gisdev.library.dto.response.librarybook.LibraryStockDTO;
 import com.gisdev.library.entity.Book;
@@ -11,7 +11,9 @@ import com.gisdev.library.mapper.LibraryMapper;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.repository.LibraryBookRepository;
 import com.gisdev.library.repository.LibraryRepository;
+import com.gisdev.library.service.iservice.IBookService;
 import com.gisdev.library.service.iservice.ILibraryBookService;
+import com.gisdev.library.service.iservice.ILibraryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
@@ -21,31 +23,35 @@ import java.util.*;
 public class LibraryBookService implements ILibraryBookService {
 
     public final LibraryBookRepository lbRepository;
-    public final LibraryRepository libraryRepository;
-    public final BookRepository bookRepository;
+//    public final LibraryRepository libraryRepository;
+//    public final BookRepository bookRepository;
     public final LibraryMapper libraryMapper;
 
-    @Override
-    public Long addListOfBooks(LibraryBookAddDTO request, Long libraryId) {
+    public final ILibraryService libraryService;
+    public final IBookService bookService;
 
-        Library library = libraryRepository.findById(libraryId).orElseThrow(() -> new BadRequestException("Library submitted does not exist"));
-        for (LibraryBookAddDTO.BookAddDTO book: request.books()) {
-            Book rbook = bookRepository.findById(book.id()).orElseThrow(() -> new BadRequestException("Book with id " + book.id() + " in the list does not exist"));
-            if (book == null) {
-                throw new BadRequestException("Book with id " + book.id() + " in the list does not exist");
-            }
+    @Override
+    public LibraryBook getLibraryBookByIds(Long bookId, Long libraryId) {
+        return lbRepository.findByLibraryIdAndBookId(bookId, libraryId);
+    }
+
+    @Override
+    public Long addListOfBooks(LibraryBookDTO request, Long libraryId) {
+
+        Library library = libraryService.getLibraryById(libraryId).orElseThrow(() -> new BadRequestException("Library submitted does not exist"));
+        for (LibraryBookDTO.BookAddDTO book: request.books()) {
+            Book rbook = bookService.getBookById(book.id()).orElseThrow(() -> new BadRequestException("Book with id " + book.id() + " in the list does not exist"));
             LibraryBook lb = lbRepository.findByLibraryIdAndBookId(libraryId, book.id());
             if (lb == null) {
-                LibraryBook newlb = LibraryBook.builder()
+                lb = LibraryBook.builder()
                         .book(rbook)
                         .library(library)
                         .stock(book.amount())
                         .build();
-                lbRepository.save(newlb);
             } else {
                 lb.setStock(lb.getStock() + book.amount());
-                lbRepository.save(lb);
             }
+            lbRepository.save(lb);
         }
         return libraryId;
     }
@@ -54,13 +60,20 @@ public class LibraryBookService implements ILibraryBookService {
     public List<LibraryBookStockDTO> getAllBookStocks() {
 
         List<LibraryBookStockDTO> result = new ArrayList<>();
-        List<Book> books = bookRepository.findAll();
+        List<Book> books = bookService.getAllWithLibraryBooks();
         for (Book book: books) {
-            List<LibraryBook> lbs = lbRepository.findAllByBook(book);
-            List<LibraryStockDTO> libstock = new ArrayList<>();
-            for (LibraryBook lb: lbs) {
-                libstock.add(new LibraryStockDTO(lb.getLibrary().getId(), lb.getLibrary().getName(), lb.getStock()));
-            }
+            List<LibraryStockDTO> libstock = book.getLibraries().stream()
+                    .map(lb -> new LibraryStockDTO(
+                            lb.getLibrary().getId(),
+                            lb.getLibrary().getName(),
+                            lb.getStock()
+                    ))
+                    .toList();
+            LibraryBookStockDTO dto = new LibraryBookStockDTO(
+                    libraryMapper.toBookDto(book),
+                    libstock
+            );
+
             result.add(new LibraryBookStockDTO(libraryMapper.toBookDto(book), libstock));
         }
         return result;

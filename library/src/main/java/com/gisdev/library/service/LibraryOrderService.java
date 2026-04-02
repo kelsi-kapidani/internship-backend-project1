@@ -9,7 +9,7 @@ import com.gisdev.library.entity.*;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.mapper.LibraryMapper;
 import com.gisdev.library.repository.*;
-import com.gisdev.library.service.iservice.ILibraryOrderService;
+import com.gisdev.library.service.iservice.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +21,23 @@ import java.util.List;
 public class LibraryOrderService implements ILibraryOrderService {
 
     public final LibraryOrderRepository orderRepository;
-    public final LibraryRepository libraryRepository;
-    public final LibraryUserRepository userRepository;
-    public final LibraryBookRepository lbRepository;
-    public final BookOrderRepository boRepository;
-    public final BookRepository bookRepository;
+//    public final LibraryRepository libraryRepository;
+//    public final LibraryUserRepository userRepository;
+//    public final LibraryBookRepository lbRepository;
+//    public final BookOrderRepository boRepository;
+//    public final BookRepository bookRepository;
     public final LibraryMapper libraryMapper;
+
+    public final IBookService bookService;
+    public final ILibraryService libraryService;
+    public final ILibraryUserService userService;
+    public final ILibraryBookService lbService;
+    public final IBookOrderService boService;
 
     @Override
     public Long createOrder(Long id, OrderCreateDTO request) {
 
-        LibraryUser user = userRepository.findById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
+        LibraryUser user = userService.getUserById(id).orElseThrow(() -> new BadRequestException("User with this id does not exist"));
         LibraryOrder order = LibraryOrder.builder()
                 .status(Status.NE_PRITJE)
                 .user(user)
@@ -39,11 +45,11 @@ public class LibraryOrderService implements ILibraryOrderService {
         orderRepository.save(order);
         Library library = user.getLibrary();
         for (OrderCreateDTO.BookOrderRequest borequest: request.books()) {
-            Book book = bookRepository.findById(borequest.bookId()).orElseGet(() -> {
+            Book book = bookService.getBookById(borequest.bookId()).orElseGet(() -> {
                 orderRepository.delete(order);
                 throw new BadRequestException("Book in the list with id" + borequest.bookId() + "does not exist");
             });
-            LibraryBook lb = lbRepository.findByLibraryIdAndBookId(library.getId(),book.getId());
+            LibraryBook lb = lbService.getLibraryBookByIds(library.getId(),book.getId());
             if (lb == null) {
                 orderRepository.delete(order);
                 throw new BadRequestException("There is no stock of book " +book.getId() + " in the user's library");
@@ -58,7 +64,7 @@ public class LibraryOrderService implements ILibraryOrderService {
                     .size(borequest.amount())
                     .value(borequest.amount() * Integer.parseInt(book.getPrice()))
                     .build();
-            boRepository.save(bo);
+            boService.saveBookOrder(bo);
         }
         return order.getId();
     }
@@ -74,9 +80,9 @@ public class LibraryOrderService implements ILibraryOrderService {
             throw new BadRequestException("This order's status cannot be changed");
         }
         if (request.status() == Status.PRANUAR) {
-            Library library = libraryRepository.findById(order.getUser().getId()).orElseThrow(() -> new BadRequestException("Could not find library of the order's user"));
+            Library library = libraryService.getLibraryById(order.getUser().getId()).orElseThrow(() -> new BadRequestException("Could not find library of the order's user"));
             for (BookOrder bo: order.getBooks()) {
-                LibraryBook currentBook = lbRepository.findByLibraryIdAndBookId(library.getId(), bo.getBook().getId());
+                LibraryBook currentBook = lbService.getLibraryBookByIds(library.getId(), bo.getBook().getId());
                 Integer currentStock = currentBook.getStock();
                 Integer currentSize = bo.getSize();
                 if(currentStock >= currentSize) {

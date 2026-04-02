@@ -2,32 +2,50 @@ package com.gisdev.library.service;
 
 import com.gisdev.library.dto.request.book.BookCUDTO;
 import com.gisdev.library.dto.response.book.BookDTO;
+import com.gisdev.library.dto.response.book.FullBookDTO;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.mapper.BookMapper;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.service.iservice.IBookService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class BookService implements IBookService {
 
+
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final ModelMapper mapper;
 
+    @Override
     public boolean existsByTitle(String title) {
         return bookRepository.existsByTitle(title);
     }
 
+    @Override
     public boolean existsById(Long id) {
         return bookRepository.existsById(id);
+    }
+
+    @Override
+    public Optional<Book> getBookById(Long id) {
+        return bookRepository.findById(id);
+    }
+
+    @Override
+    public List<Book> getAllWithLibraryBooks() {
+        return bookRepository.findAllWithLibraryBooks();
     }
 
     @Override
@@ -61,11 +79,12 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<BookDTO> getAllBooks(List<String> filters, String sort) {
+    public List<FullBookDTO> getAllBooks(List<String> filters, String sort) {
 
-        List<BookDTO> response = new ArrayList<>();
+        List<FullBookDTO> response = new ArrayList<>();
         for (Book book: bookRepository.findAll(genSpecs(filters), genSort(sort))) {
-            response.add(bookMapper.toDto(book));
+//            response.add(bookMapper.toDto(book));
+            response.add(mapper.map(book, FullBookDTO.class));
         }
         return response;
     }
