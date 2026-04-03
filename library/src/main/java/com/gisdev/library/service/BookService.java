@@ -8,6 +8,7 @@ import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.mapper.BookMapper;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.service.iservice.IBookService;
+import com.gisdev.library.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,16 @@ public class BookService implements IBookService {
         }
         return response;
     }
+
+//    @Override
+//    public List<BookDTO> getAllBooks2(List<String> filters, String sort) {
+//
+//        List<BookDTO> response = new ArrayList<>();
+//        for (Book book : bookRepository.findAll(genSpecs(filters), genSort(sort))) {
+//            response.add(JsonUtil.map(book, BookDTO.class));
+//        }
+//        return response;
+//    }
 
     public Sort genSort(String sort) {
         if (sort == null || sort.isEmpty()) {

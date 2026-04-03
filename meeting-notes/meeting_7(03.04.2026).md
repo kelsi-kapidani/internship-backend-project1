@@ -8,4 +8,8 @@
 
 ## Shenime
 
-*
+* pika 1) Interface loser coupling se vete class sepse jo dependant nga ndryshime te llogjikes se funksionit vetem signature
+
+* thrrit gjithmone interface jo fvte service 
+
+* komente
