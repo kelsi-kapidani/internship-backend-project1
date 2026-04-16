@@ -69,12 +69,6 @@ public class LibraryBookService implements ILibraryBookService {
                             lb.getStock()
                     ))
                     .toList();
-            //look at maybe redundant
-//            LibraryBookStockDTO dto = new LibraryBookStockDTO(
-//                    libraryMapper.toBookDto(book),
-//                    libstock
- //           );
-
             result.add(new LibraryBookStockDTO(libraryMapper.toBookDto(book), libstock));
         }
         return result;
