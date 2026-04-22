@@ -93,7 +93,7 @@ public class LibraryOrderService implements ILibraryOrderService {
         //changing order to accepted status
         if (request.status() == Status.PRANUAR) {
             //check if library of order/user exists
-            Library library = libraryService.getLibraryById(order.getUser().getId()).orElseThrow(() -> new BadRequestException("Could not find library of the order's user"));
+            Library library = libraryService.getLibraryById(order.getUser().getLibrary().getId()).orElseThrow(() -> new BadRequestException("Could not find library of the order's user"));
             //reserve/allocate books of the order to it
             for (BookOrder bo: order.getBooks()) {
                 LibraryBook currentBook = lbService.getLibraryBookByIds(library.getId(), bo.getBook().getId());

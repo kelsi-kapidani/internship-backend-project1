@@ -27,11 +27,13 @@ public class LibraryService implements ILibraryService {
         return libraryRepository.existsByName(username);
     }
 
+    //redundante per tu hequr
     @Override
     public boolean idExists(Long id) {
         return libraryRepository.existsById(id);
     }
 
+    //gjeneralizohje dhe me shume
     @Override
     public Optional<Library> getLibraryById(Long id) {
         return libraryRepository.findById(id);
@@ -44,13 +46,14 @@ public class LibraryService implements ILibraryService {
             throw new BadRequestException("Library with this name already exists");
         }
         Library library = libraryMapper.toEntity(request);
+        //save gjeneralizoje me nje funksion
         libraryRepository.save(library);
         return library.getId();
     }
 
     @Override
     public Long updateLibrary(Long id, LibraryCUDTO request) {
-
+        //check nese ka te tjere me kete emer except veten
         Library library = libraryRepository.findById(id).orElseThrow(() -> new BadRequestException("Library with this id does not exist"));
         libraryMapper.updateLibraryFromDto(request, library);
         libraryRepository.save(library);
