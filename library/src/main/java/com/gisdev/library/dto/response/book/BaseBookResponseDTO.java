@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseBookDTO {
+public class BaseBookResponseDTO {
 
     private Long id;
     private String title;

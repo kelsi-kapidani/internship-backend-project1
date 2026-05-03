@@ -1,25 +1,24 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.dto.request.library.LibraryCUDTO;
-import com.gisdev.library.dto.response.library.LibraryDTO;
+import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.entity.Library;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ILibraryService {
 
-    boolean nameExists(String name);
+    void nameExists(String name);
 
-    boolean idExists(Long id);
+    void idExists(Long id);
 
-    Optional<Library> getLibraryById(Long id);
+    Library getLibraryById(Long id, String exceptiponMessage);
 
-    Long createLibrary(LibraryCUDTO request);
+    Long createLibrary(BaseLibraryRequestDTO request);
 
-    Long updateLibrary(Long id, LibraryCUDTO request);
+    Long updateLibrary(Long id, BaseLibraryRequestDTO request);
 
     Long deleteLibrary(Long id);
 
-    List<LibraryDTO> getAllLibraries(String name, String address);
+    List<FullLibraryResponseDTO> getAllLibraries(String name, String address);
 }

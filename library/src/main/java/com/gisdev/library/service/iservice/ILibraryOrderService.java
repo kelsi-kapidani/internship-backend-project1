@@ -1,16 +1,19 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.dto.request.order.OrderCreateDTO;
-import com.gisdev.library.dto.request.order.OrderUpdateDTO;
-import com.gisdev.library.dto.response.order.OrderDTO;
+import com.gisdev.library.dto.request.order.OrderCreateRequestDTO;
+import com.gisdev.library.dto.request.order.OrderUpdateRequestDTO;
+import com.gisdev.library.dto.response.order.FullOrderResponseDTO;
+import com.gisdev.library.entity.LibraryOrder;
 
 import java.util.List;
 
 public interface ILibraryOrderService {
 
-    Long createOrder(Long userId, OrderCreateDTO request);
+    void deleteWithException(String exceptionMessage, LibraryOrder order);
 
-    Long updateOrder(Long orderId, OrderUpdateDTO request);
+    Long createOrder(Long userId, OrderCreateRequestDTO request);
 
-    List<OrderDTO> getAllPendingOrders();
+    Long updateOrder(Long orderId, OrderUpdateRequestDTO request);
+
+    List<FullOrderResponseDTO> getAllPendingOrders();
 }

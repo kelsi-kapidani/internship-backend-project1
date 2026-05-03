@@ -1,9 +1,9 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.order.OrderCreateDTO;
-import com.gisdev.library.dto.request.order.OrderUpdateDTO;
-import com.gisdev.library.dto.response.order.OrderDTO;
-import com.gisdev.library.service.LibraryOrderService;
+import com.gisdev.library.dto.request.order.OrderCreateRequestDTO;
+import com.gisdev.library.dto.request.order.OrderUpdateRequestDTO;
+import com.gisdev.library.dto.response.order.FullOrderResponseDTO;
+import com.gisdev.library.service.iservice.ILibraryOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,22 +19,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LibraryOrderController {
 
-    public final LibraryOrderService orderService;
+    private final ILibraryOrderService orderService;
 
     @PostMapping("/create/{id}")
-    public ResponseEntity<Long> createOrder(@PathVariable Long id, @Valid @RequestBody OrderCreateDTO request) {
+    public ResponseEntity<Long> createOrder(@PathVariable Long id, @Valid @RequestBody OrderCreateRequestDTO request) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(id, request));
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Long> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderUpdateDTO request) {
+    public ResponseEntity<Long> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderUpdateRequestDTO request) {
 
         return ResponseEntity.ok(orderService.updateOrder(id, request));
     }
 
     @GetMapping("/pending")
-    public List<OrderDTO> getAllPendingOrders() {
+    public List<FullOrderResponseDTO> getAllPendingOrders() {
 
         return orderService.getAllPendingOrders();
     }

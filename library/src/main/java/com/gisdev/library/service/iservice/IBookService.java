@@ -1,8 +1,7 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.dto.request.book.BookCUDTO;
-import com.gisdev.library.dto.response.book.BookDTO;
-import com.gisdev.library.dto.response.book.FullBookDTO;
+import com.gisdev.library.dto.request.book.BaseBookRequestDTO;
+import com.gisdev.library.dto.response.book.FullBookResponseDTO;
 import com.gisdev.library.entity.Book;
 
 import java.util.List;
@@ -10,19 +9,19 @@ import java.util.Optional;
 
 public interface IBookService {
 
-    boolean existsByTitle(String title);
+    void existsByTitle(String title);
 
-    boolean existsById(Long id);
+    void existsById(Long id);
 
     Optional<Book> getBookById(Long id);
 
     List<Book> getAllWithLibraryBooks();
 
-    Long createBook(BookCUDTO request);
+    Long createBook(BaseBookRequestDTO request);
 
-    Long updateBook(Long id, BookCUDTO request);
+    Long updateBook(Long id, BaseBookRequestDTO request);
 
     Long deleteBook(Long id);
 
-    List<FullBookDTO> getAllBooks(List<String> filter, String sort);
+    List<FullBookResponseDTO> getAllBooks(List<String> filter, String sort);
 }

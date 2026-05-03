@@ -1,17 +1,13 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.request.book.BookCUDTO;
-import com.gisdev.library.dto.response.book.BookDTO;
-import com.gisdev.library.dto.response.book.FullBookDTO;
+import com.gisdev.library.dto.request.book.BaseBookRequestDTO;
+import com.gisdev.library.dto.response.book.FullBookResponseDTO;
 import com.gisdev.library.entity.Book;
 import com.gisdev.library.exception.BadRequestException;
-import com.gisdev.library.mapper.BookMapper;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.service.iservice.IBookService;
-import com.gisdev.library.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
@@ -24,25 +20,25 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BookService implements IBookService {
 
-
     private final BookRepository bookRepository;
-    private final BookMapper bookMapper;
     private final ModelMapper mapper;
 
     @Override
-    public boolean existsByTitle(String title) {
-        return bookRepository.existsByTitle(title);
+    public void existsByTitle(String title) {
+        if (bookRepository.existsByTitle(title)) {
+            throw new BadRequestException("Book with this title already exists");
+        }
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return bookRepository.existsById(id);
+    public void existsById(Long id) {
+        if(bookRepository.existsById(id)) {
+            throw new BadRequestException("Book with this title already exists");
+        }
     }
 
     @Override
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
-    }
+    public Optional<Book> getBookById(Long id) {return bookRepository.findById(id); }
 
     @Override
     public List<Book> getAllWithLibraryBooks() {
@@ -50,21 +46,22 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public Long createBook(BookCUDTO request) {
+    public Long createBook(BaseBookRequestDTO request) {
 
-        if (existsByTitle(request.title())) {
-            throw new BadRequestException("Book with this title already exists");
-        }
-        Book book = bookMapper.toEntity(request);
+        existsByTitle(request.getTitle());
+        Book book = mapper.map(request, Book.class);
         bookRepository.save(book);
         return book.getId();
     }
 
     @Override
-    public Long updateBook(Long id, BookCUDTO request) {
+    public Long updateBook(Long id, BaseBookRequestDTO request) {
 
-        Book book = bookRepository.findById(id).orElseThrow(() -> new BadRequestException("Book with this id does not exist"));
-        bookMapper.updateBookFromDto(request, book);
+        Book book = getBookById(id).orElseThrow(() -> new BadRequestException("Book with this id does not exist"));
+        if(!request.getTitle().equals(book.getTitle())) {
+            existsByTitle(request.getTitle());
+        }
+        mapper.map(request, book);
         bookRepository.save(book);
         return id;
     }
@@ -72,20 +69,17 @@ public class BookService implements IBookService {
     @Override
     public Long deleteBook(Long id) {
 
-        if (!existsById(id)) {
-            throw new BadRequestException("Book with this id does not exist");
-        }
+        existsById(id);
         bookRepository.deleteById(id);
         return id;
     }
 
     @Override
-    public List<FullBookDTO> getAllBooks(List<String> filters, String sort) {
+    public List<FullBookResponseDTO> getAllBooks(List<String> filters, String sort) {
 
-        List<FullBookDTO> response = new ArrayList<>();
+        List<FullBookResponseDTO> response = new ArrayList<>();
         for (Book book: bookRepository.findAll(genSpecs(filters), genSort(sort))) {
-//            response.add(bookMapper.toDto(book));
-            response.add(mapper.map(book, FullBookDTO.class));
+            response.add(mapper.map(book, FullBookResponseDTO.class));
         }
         return response;
     }

@@ -1,8 +1,8 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.librarybook.LibraryBookDTO;
-import com.gisdev.library.dto.response.librarybook.LibraryBookStockDTO;
-import com.gisdev.library.service.LibraryBookService;
+import com.gisdev.library.dto.request.librarybook.BaseLibraryBookRequestDTO;
+import com.gisdev.library.dto.response.librarybook.LibraryBookResponseDTO;
+import com.gisdev.library.service.iservice.ILibraryBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +17,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LibraryBookController {
 
-    public final LibraryBookService lbService;
+    private final ILibraryBookService lbService;
 
     @PutMapping("/add/{id}")
-    public ResponseEntity<Long> addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody LibraryBookDTO request) {
+    public ResponseEntity<Long> addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody BaseLibraryBookRequestDTO request) {
 
         return ResponseEntity.ok(lbService.addListOfBooks(request, id));
     }
 
     @GetMapping
-    public List<LibraryBookStockDTO> getAllBookStocks() {
+    public List<LibraryBookResponseDTO> getAllBookStocks() {
 
         return lbService.getAllBookStocks();
     }

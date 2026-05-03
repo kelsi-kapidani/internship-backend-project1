@@ -1,7 +1,8 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.user.UserCUDTO;
-import com.gisdev.library.service.LibraryUserService;
+import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
+import com.gisdev.library.dto.response.user.FullUserResponseDTO;
+import com.gisdev.library.service.iservice.ILibraryUserService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import javax.ws.rs.core.Response;
-
 @RestController
 @RequestMapping("/user")
 @Controller
@@ -21,22 +20,22 @@ import javax.ws.rs.core.Response;
 @Validated
 public class LibraryUserController {
 
-    public final LibraryUserService userService;
+    private final ILibraryUserService userService;
 
     @PostMapping("/create")
-    public ResponseEntity<Long> createUser(@Valid @RequestBody UserCUDTO request) {
+    public ResponseEntity<Long> createUser(@Valid @RequestBody BaseUserRequestDTO request) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
     }
 
     @GetMapping("/{id}")
-    public Object getUser(@PathVariable long id) {
+    public FullUserResponseDTO getUser(@PathVariable long id) {
 
         return userService.getUser(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateUser(@PathVariable Long id, @Valid @RequestBody UserCUDTO request) {
+    public ResponseEntity<Long> updateUser(@PathVariable Long id, @Valid @RequestBody BaseUserRequestDTO request) {
 
         return ResponseEntity.ok(userService.updateUser(id,request));
     }

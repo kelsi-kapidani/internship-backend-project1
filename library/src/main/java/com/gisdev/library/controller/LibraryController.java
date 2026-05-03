@@ -1,8 +1,8 @@
 package com.gisdev.library.controller;
 
-import com.gisdev.library.dto.request.library.LibraryCUDTO;
-import com.gisdev.library.dto.response.library.LibraryDTO;
-import com.gisdev.library.service.LibraryService;
+import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
+import com.gisdev.library.service.iservice.ILibraryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,22 +18,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LibraryController {
 
-    public final LibraryService libraryService;
+    private final ILibraryService libraryService;
 
     @GetMapping("/all")
-    public List<LibraryDTO> getAllLibraries (@RequestParam(required = false) String name, @RequestParam(required = false) String address) {
+    public List<FullLibraryResponseDTO> getAllLibraries (@RequestParam(required = false) String name, @RequestParam(required = false) String address) {
 
         return libraryService.getAllLibraries(name, address);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Long> createLibrary(@Valid @RequestBody LibraryCUDTO request) {
+    public ResponseEntity<Long> createLibrary(@Valid @RequestBody BaseLibraryRequestDTO request) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(libraryService.createLibrary(request));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateLibrary(@PathVariable Long id, @Valid @RequestBody LibraryCUDTO request) {
+    public ResponseEntity<Long> updateLibrary(@PathVariable Long id, @Valid @RequestBody BaseLibraryRequestDTO request) {
 
         return ResponseEntity.ok(libraryService.updateLibrary(id, request));
     }

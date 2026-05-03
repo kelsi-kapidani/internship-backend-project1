@@ -1,17 +1,25 @@
 package com.gisdev.library.dto.request.user;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-public record UserCUDTO(
-
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class BaseUserRequestDTO {
+    
     @NotBlank(message = "Name is required")
-    String name,
+    private String name;
 
     @NotBlank(message = "Surname is required")
-    String surname,
+    private String surname;
 
     @NotBlank(message = "Username is required")
-    String username,
+    private String username;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
@@ -19,12 +27,12 @@ public record UserCUDTO(
             regexp = ".*[!@#$%^&*()_+=|<>?{}\\[\\]~-].*",
             message = "Password must contain at least one special character"
     )
-    String password,
+    private String password;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email")
-    String email,
+    private String email;
 
     @NotNull(message = "Library id is required")
-    Long library_id
-)   {}
+    private Long library_id;
+}

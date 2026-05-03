@@ -1,6 +1,7 @@
-package com.gisdev.library.dto.response.order;
+package com.gisdev.library.dto.request.order;
 
 import com.gisdev.library.constants.enums.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,9 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseOrderDTO {
+public class OrderUpdateRequestDTO {
 
-    private Long id;
+    private String note;
+    @NotNull(message = "New status needs to be defined")
     private Status status;
 }

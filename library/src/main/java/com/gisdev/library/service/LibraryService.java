@@ -1,61 +1,60 @@
 package com.gisdev.library.service;
 
-import com.gisdev.library.dto.request.library.LibraryCUDTO;
-import com.gisdev.library.dto.response.library.LibraryDTO;
+import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.exception.BadRequestException;
-import com.gisdev.library.mapper.LibraryMapper;
 import com.gisdev.library.repository.LibraryRepository;
 import com.gisdev.library.service.iservice.ILibraryService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class LibraryService implements ILibraryService {
 
-    public final LibraryRepository libraryRepository;
-    public final LibraryMapper libraryMapper;
+    private final LibraryRepository libraryRepository;
+    private final ModelMapper modelMapper;
 
     @Override
-    public boolean nameExists(String username) {
-        return libraryRepository.existsByName(username);
-    }
-
-    //redundante per tu hequr
-    @Override
-    public boolean idExists(Long id) {
-        return libraryRepository.existsById(id);
-    }
-
-    //gjeneralizohje dhe me shume
-    @Override
-    public Optional<Library> getLibraryById(Long id) {
-        return libraryRepository.findById(id);
-    }
-
-    @Override
-    public Long createLibrary(LibraryCUDTO request) {
-
-        if (nameExists(request.name())) {
+    public void nameExists(String name) {
+        if (libraryRepository.existsByName(name)) {
             throw new BadRequestException("Library with this name already exists");
         }
-        Library library = libraryMapper.toEntity(request);
-        //save gjeneralizoje me nje funksion
+    }
+
+    @Override
+    public void idExists(Long id) {
+        if (libraryRepository.existsById(id)) {
+            throw new BadRequestException("Library with this id does not exist");
+        }
+    }
+
+    @Override
+    public Library getLibraryById(Long id, String exceptionMessage) {
+        return libraryRepository.findById(id).orElseThrow(() -> new BadRequestException(exceptionMessage));
+    }
+
+    @Override
+    public Long createLibrary(BaseLibraryRequestDTO request) {
+
+        nameExists(request.getName());
+        Library library = modelMapper.map(request, Library.class);
         libraryRepository.save(library);
         return library.getId();
     }
 
     @Override
-    public Long updateLibrary(Long id, LibraryCUDTO request) {
-        //check nese ka te tjere me kete emer except veten
-        Library library = libraryRepository.findById(id).orElseThrow(() -> new BadRequestException("Library with this id does not exist"));
-        libraryMapper.updateLibraryFromDto(request, library);
+    public Long updateLibrary(Long id, BaseLibraryRequestDTO request) {
+        Library library = getLibraryById(id,"Library with this id does not exist");
+        if(!request.getName().equals(library.getName())) {
+            nameExists(request.getName());
+        }
+        modelMapper.map(request, library);
         libraryRepository.save(library);
         return id;
     }
@@ -63,19 +62,17 @@ public class LibraryService implements ILibraryService {
     @Override
     public Long deleteLibrary(Long id) {
 
-        if (!idExists(id)) {
-            throw new BadRequestException("Library with this id does not exist");
-        }
+        idExists(id);
         libraryRepository.deleteById(id);
         return id;
     }
 
     @Override
-    public List<LibraryDTO> getAllLibraries(String name, String address) {
+    public List<FullLibraryResponseDTO> getAllLibraries(String name, String address) {
 
-        List<LibraryDTO> response = new ArrayList<>();
+        List<FullLibraryResponseDTO> response = new ArrayList<>();
         for (Library library: libraryRepository.findAllWithFilters(name, address)) {
-            response.add(libraryMapper.toDto(library));
+            response.add(modelMapper.map(library, FullLibraryResponseDTO.class));
         }
         return response;
     }

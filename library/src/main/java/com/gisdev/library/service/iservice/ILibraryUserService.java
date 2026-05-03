@@ -1,21 +1,20 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.dto.request.user.UserCUDTO;
+import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
+import com.gisdev.library.dto.response.user.FullUserResponseDTO;
 import com.gisdev.library.entity.LibraryUser;
-
-import java.util.Optional;
 
 public interface ILibraryUserService {
 
-    Optional<LibraryUser> getUserById(Long id);
+    LibraryUser getUserById(Long id, String exceptionMessage);
     
-    boolean usernameExists(String username);
+    void usernameExists(String username);
 
-    Long createUser(UserCUDTO request);
+    Long createUser(BaseUserRequestDTO request);
 
-    Object getUser(Long id);
+    FullUserResponseDTO getUser(Long id);
 
-    Long updateUser(Long id, UserCUDTO request);
+    Long updateUser(Long id, BaseUserRequestDTO request);
 
     Long setUserActive(Long id);
 

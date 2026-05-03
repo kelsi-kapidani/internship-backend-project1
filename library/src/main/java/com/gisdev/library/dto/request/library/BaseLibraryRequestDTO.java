@@ -1,5 +1,6 @@
-package com.gisdev.library.dto.response.library;
+package com.gisdev.library.dto.request.library;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,10 +10,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseLibraryDTO {
+public class BaseLibraryRequestDTO {
 
-    private Long id;
+    @NotBlank(message = "Name is required")
     private String name;
+    @NotBlank(message = "Address is required")
     private String address;
-
 }
