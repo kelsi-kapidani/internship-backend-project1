@@ -17,12 +17,13 @@ public class LibraryOrder extends BaseEntity{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
     private String note;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private LibraryUser user;
 
-    @OneToMany(mappedBy = "order")
-    private List<BookOrder> books;
+    @OneToMany(mappedBy = "order", cascade=CascadeType.ALL, orphanRemoval = true)
+    private List<BookLibraryOrder> books;
 }

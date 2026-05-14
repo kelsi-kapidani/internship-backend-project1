@@ -34,7 +34,7 @@ public class Book extends BaseEntity {
     private LocalDate year_of_publication;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BookOrder> orders;
+    private List<BookLibraryOrder> orders;
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LibraryBook> libraries;
 }

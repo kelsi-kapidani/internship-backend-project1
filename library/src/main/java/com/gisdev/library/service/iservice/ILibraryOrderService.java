@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface ILibraryOrderService {
 
-    void deleteWithException(String exceptionMessage, LibraryOrder order);
-
     Long createOrder(Long userId, OrderCreateRequestDTO request);
 
     Long updateOrder(Long orderId, OrderUpdateRequestDTO request);

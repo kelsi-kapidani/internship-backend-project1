@@ -47,28 +47,29 @@ public class BookService implements IBookService {
 
     @Override
     public Long createBook(BaseBookRequestDTO request) {
-
         existsByTitle(request.getTitle());
+
         Book book = mapper.map(request, Book.class);
         bookRepository.save(book);
+
         return book.getId();
     }
 
     @Override
     public Long updateBook(Long id, BaseBookRequestDTO request) {
-
         Book book = getBookById(id).orElseThrow(() -> new BadRequestException("Book with this id does not exist"));
         if(!request.getTitle().equals(book.getTitle())) {
             existsByTitle(request.getTitle());
         }
+
         mapper.map(request, book);
         bookRepository.save(book);
+
         return id;
     }
 
     @Override
     public Long deleteBook(Long id) {
-
         existsById(id);
         bookRepository.deleteById(id);
         return id;
@@ -76,11 +77,12 @@ public class BookService implements IBookService {
 
     @Override
     public List<FullBookResponseDTO> getAllBooks(List<String> filters, String sort) {
-
         List<FullBookResponseDTO> response = new ArrayList<>();
+
         for (Book book: bookRepository.findAll(genSpecs(filters), genSort(sort))) {
             response.add(mapper.map(book, FullBookResponseDTO.class));
         }
+
         return response;
     }
 
@@ -96,24 +98,28 @@ public class BookService implements IBookService {
         if(parts[1].equals("asc")) {
             return Sort.by(parts[0]).descending();
         }
+
         return Sort.by(parts[0]).ascending();
     }
 
     public Specification<Book> genSpecs(List<String> filters) {
-
         if (filters == null || filters.isEmpty()) {
             return (root, query, cb) -> cb.conjunction();
         }
         if (filters.get(0).isBlank()) {
             return (root, query, cb) -> cb.conjunction();
         }
+
         String[] filtersArray = filters.getFirst().split(",");
         Specification<Book> specs = (root, query, cb) -> cb.conjunction();
+
         for (String filter: filtersArray) {
             String[] parts = filter.split(":");
+
             if(!allowedFields.contains(parts[0])) {
                 throw new BadRequestException("The filtering field"+parts[0]+"is not legal");
             }
+
             switch (parts[1]) {
                 case "eq":
                     specs = specs.and((root, query, cb) -> cb.equal(root.get(parts[0]), parts[2]));

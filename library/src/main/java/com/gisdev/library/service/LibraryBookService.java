@@ -35,40 +35,50 @@ public class LibraryBookService implements ILibraryBookService {
 
     @Override
     public Long addListOfBooks(BaseLibraryBookRequestDTO request, Long libraryId) {
-
         Library library = libraryService.getLibraryById(libraryId,"Library submitted does not exist");
-        for (LibraryBookAmountRequestDTO book: request.getBooks()) {
-            Book rbook = bookService.getBookById(book.getId()).orElseThrow(() -> new BadRequestException("Book with id " + book.getId() + " in the list does not exist"));
+
+        for (LibraryBookAmountRequestDTO requestBook: request.getBooks()) {
+            Book book = bookService.getBookById(requestBook.getId()).orElseThrow(() -> new BadRequestException("Book with id " + requestBook.getId() + " in the list does not exist"));
             LibraryBook lb = lbRepository.findByLibraryIdAndBookId(libraryId, book.getId());
-            if (lb == null) {
-                lb = LibraryBook.builder()
-                        .book(rbook)
-                        .library(library)
-                        .stock(book.getAmount())
-                        .build();
-            } else {
-                lb.setStock(lb.getStock() + book.getAmount());
-            }
-            lbRepository.save(lb);
+
+            checkAndSaveLibraryBook(lb, library, book, requestBook);
         }
+
         return libraryId;
     }
+
+    private void checkAndSaveLibraryBook(LibraryBook lb, Library library, Book book, LibraryBookAmountRequestDTO requestBook) {
+        if (lb == null) {
+            lb = LibraryBook.builder()
+                    .book(book)
+                    .library(library)
+                    .stock(requestBook.getAmount())
+                    .build();
+        } else {
+            lb.setStock(lb.getStock() + requestBook.getAmount());
+        }
+
+        lbRepository.save(lb);
+    }
+
 
     @Override
     public List<LibraryBookResponseDTO> getAllBookStocks() {
 
         List<LibraryBookResponseDTO> result = new ArrayList<>();
         List<Book> books = bookService.getAllWithLibraryBooks();
+
         for (Book book: books) {
-            List<LibraryBookStockResponseDTO> libstock = book.getLibraries().stream()
+            List<LibraryBookStockResponseDTO> libraryStock = book.getLibraries().stream()
                     .map(lb -> new LibraryBookStockResponseDTO(
                             lb.getLibrary().getId(),
                             lb.getLibrary().getName(),
                             lb.getStock()
                     ))
                     .toList();
-            result.add(new LibraryBookResponseDTO(modelMapper.map(book, BaseBookResponseDTO.class), libstock));
+            result.add(new LibraryBookResponseDTO(modelMapper.map(book, BaseBookResponseDTO.class), libraryStock));
         }
+
         return result;
     }
 

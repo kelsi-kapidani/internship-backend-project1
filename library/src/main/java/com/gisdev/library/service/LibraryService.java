@@ -41,10 +41,11 @@ public class LibraryService implements ILibraryService {
 
     @Override
     public Long createLibrary(BaseLibraryRequestDTO request) {
-
         nameExists(request.getName());
+
         Library library = modelMapper.map(request, Library.class);
         libraryRepository.save(library);
+
         return library.getId();
     }
 
@@ -54,8 +55,10 @@ public class LibraryService implements ILibraryService {
         if(!request.getName().equals(library.getName())) {
             nameExists(request.getName());
         }
+
         modelMapper.map(request, library);
         libraryRepository.save(library);
+
         return id;
     }
 
@@ -71,9 +74,11 @@ public class LibraryService implements ILibraryService {
     public List<FullLibraryResponseDTO> getAllLibraries(String name, String address) {
 
         List<FullLibraryResponseDTO> response = new ArrayList<>();
+
         for (Library library: libraryRepository.findAllWithFilters(name, address)) {
             response.add(modelMapper.map(library, FullLibraryResponseDTO.class));
         }
+
         return response;
     }
 
