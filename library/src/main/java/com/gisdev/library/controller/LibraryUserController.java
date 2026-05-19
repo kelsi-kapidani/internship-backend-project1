@@ -50,6 +50,8 @@ public class LibraryUserController {
     public ResponseEntity<Long> changePassword(
             @PathVariable Long id,
             @NotBlank(message = "Password is empty")
+            //beje me body passwordin me 2 here passwordin
+            //definoje diku constraint dhe therrite shih mos te jep chatgpt dicka
             @Pattern(
                     regexp = ".*[!@#$%^&*()_+=|<>?{}\\[\\]~-].*",
                     message = "Password must contain at least one special character"

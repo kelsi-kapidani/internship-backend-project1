@@ -16,6 +16,8 @@ import com.gisdev.library.service.iservice.ILibraryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.*;
 
 @Service
@@ -34,6 +36,7 @@ public class LibraryBookService implements ILibraryBookService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long addListOfBooks(BaseLibraryBookRequestDTO request, Long libraryId) {
         Library library = libraryService.getLibraryById(libraryId,"Library submitted does not exist");
 

@@ -32,6 +32,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     private final IBookOrderService boService;
 
 
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long createOrder(Long id, OrderCreateRequestDTO request) {
@@ -69,6 +70,7 @@ public class LibraryOrderService implements ILibraryOrderService {
         Book book = bookService.getBookById(boRequest.getBookId()).orElseThrow(() -> new BadRequestException("Book in the list with id" + boRequest.getBookId() + "does not exist"));
         LibraryBook lb = lbService.getLibraryBookByIds(library.getId(), book.getId());
 
+
         if (lb == null) {
             throw new BadRequestException("Book with ID: " + book.getId() + " is not present in this library!");
         }
@@ -80,6 +82,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Long updateOrder(Long id, OrderUpdateRequestDTO request) {
         LibraryOrder order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException("This order does not exist"));
         validateUpdateRequest(request, order);
@@ -136,6 +139,7 @@ public class LibraryOrderService implements ILibraryOrderService {
         }
         return response;
     }
+
     private void mapAndAddOrder(Long id, int sum, LibraryUser user, List<BookOrderResponseDTO> books, List<FullOrderResponseDTO> response) {
         FullOrderResponseDTO orderResponse = new FullOrderResponseDTO(
                 id,
@@ -147,7 +151,7 @@ public class LibraryOrderService implements ILibraryOrderService {
 
     private void fillBooksList(int sum, LibraryOrder order, List<BookOrderResponseDTO> books) {
         for (BookLibraryOrder bo: order.getBooks()) {
-            sum += bo.getValue();
+            sum += bo.getValue() * bo.getSize();
             books.add(new BookOrderResponseDTO(
                     modelMapper.map(bo.getBook(), BaseBookResponseDTO.class),
                     bo.getSize(),

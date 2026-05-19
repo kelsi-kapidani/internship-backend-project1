@@ -80,10 +80,6 @@ public class LibraryUserService implements ILibraryUserService {
     public Long changePassword (Long id, String newPassword) {
         LibraryUser user = getUserById(id,"User with this id does not exist");
 
-        if (user.getPassword().equals(newPassword)) {
-            throw new BadRequestException("This password is the old one");
-        }
-
         user.setPassword(newPassword);
         userRepository.save(user);
 
