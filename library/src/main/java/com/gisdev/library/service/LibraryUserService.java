@@ -2,6 +2,8 @@ package com.gisdev.library.service;
 
 import com.gisdev.library.constants.enums.Role;
 import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
+import com.gisdev.library.dto.request.user.ChangeUserRequestDTO;
+import com.gisdev.library.dto.request.user.NewPasswordRequestDTO;
 import com.gisdev.library.dto.response.user.FullUserResponseDTO;
 import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryUser;
@@ -55,7 +57,7 @@ public class LibraryUserService implements ILibraryUserService {
     }
 
     @Override
-    public Long updateUser(Long id, BaseUserRequestDTO request) {
+    public Long updateUser(Long id, ChangeUserRequestDTO request) {
         LibraryUser user = getUserById(id,"User you are trying to update does not exist");
         Library library = libraryService.getLibraryById(request.getLibrary_id(),"Library of the user does not exist");
 
@@ -77,10 +79,12 @@ public class LibraryUserService implements ILibraryUserService {
     }
 
     @Override
-    public Long changePassword (Long id, String newPassword) {
+    public Long changePassword (Long id, NewPasswordRequestDTO request) {
         LibraryUser user = getUserById(id,"User with this id does not exist");
-
-        user.setPassword(newPassword);
+        if(!request.getNewPassword().equals(request.getRepeatedPassword())) {
+            throw new BadRequestException("Repeated password does not match the new password");
+        }
+        user.setPassword(request.getNewPassword());
         userRepository.save(user);
 
         return id;

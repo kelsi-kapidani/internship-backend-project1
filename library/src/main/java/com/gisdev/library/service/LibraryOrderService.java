@@ -129,11 +129,10 @@ public class LibraryOrderService implements ILibraryOrderService {
 
         List<FullOrderResponseDTO> response = new ArrayList<>();
         for (LibraryOrder order: orderRepository.findAllByStatus(Status.NE_PRITJE)) {
-            int sum = 0;
             LibraryUser user = order.getUser();
 
             List<BookOrderResponseDTO> books = new ArrayList<>();
-            fillBooksList(sum, order, books);
+            int sum = fillBooksList(order, books);
 
             mapAndAddOrder(order.getId(), sum, user, books, response);
         }
@@ -149,14 +148,18 @@ public class LibraryOrderService implements ILibraryOrderService {
         response.add(orderResponse);
     }
 
-    private void fillBooksList(int sum, LibraryOrder order, List<BookOrderResponseDTO> books) {
+    private int fillBooksList(LibraryOrder order, List<BookOrderResponseDTO> books) {
+        int sum = 0;
+
         for (BookLibraryOrder bo: order.getBooks()) {
-            sum += bo.getValue() * bo.getSize();
+            sum += bo.getValue();
             books.add(new BookOrderResponseDTO(
                     modelMapper.map(bo.getBook(), BaseBookResponseDTO.class),
                     bo.getSize(),
                     bo.getValue()));
         }
+
+        return sum;
     }
 
 }

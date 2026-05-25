@@ -1,6 +1,8 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
+import com.gisdev.library.dto.request.user.ChangeUserRequestDTO;
+import com.gisdev.library.dto.request.user.NewPasswordRequestDTO;
 import com.gisdev.library.dto.response.user.FullUserResponseDTO;
 import com.gisdev.library.service.iservice.ILibraryUserService;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +37,7 @@ public class LibraryUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Long> updateUser(@PathVariable Long id, @Valid @RequestBody BaseUserRequestDTO request) {
+    public ResponseEntity<Long> updateUser(@PathVariable Long id, @Valid @RequestBody ChangeUserRequestDTO request) {
 
         return ResponseEntity.ok(userService.updateUser(id,request));
     }
@@ -49,15 +51,8 @@ public class LibraryUserController {
     @PatchMapping("/password/{id}")
     public ResponseEntity<Long> changePassword(
             @PathVariable Long id,
-            @NotBlank(message = "Password is empty")
-            //beje me body passwordin me 2 here passwordin
-            //definoje diku constraint dhe therrite shih mos te jep chatgpt dicka
-            @Pattern(
-                    regexp = ".*[!@#$%^&*()_+=|<>?{}\\[\\]~-].*",
-                    message = "Password must contain at least one special character"
-            )
-            String password) {
+            @Valid @RequestBody NewPasswordRequestDTO request) {
 
-        return ResponseEntity.ok(userService.changePassword(id, password));
+        return ResponseEntity.ok(userService.changePassword(id, request));
     }
 }

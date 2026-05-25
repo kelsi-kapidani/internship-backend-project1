@@ -29,7 +29,7 @@ public class LibraryService implements ILibraryService {
 
     @Override
     public void idExists(Long id) {
-        if (libraryRepository.existsById(id)) {
+        if (!libraryRepository.existsById(id)) {
             throw new BadRequestException("Library with this id does not exist");
         }
     }

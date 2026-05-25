@@ -1,6 +1,8 @@
 package com.gisdev.library.service.iservice;
 
 import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
+import com.gisdev.library.dto.request.user.ChangeUserRequestDTO;
+import com.gisdev.library.dto.request.user.NewPasswordRequestDTO;
 import com.gisdev.library.dto.response.user.FullUserResponseDTO;
 import com.gisdev.library.entity.LibraryUser;
 
@@ -14,9 +16,9 @@ public interface ILibraryUserService {
 
     FullUserResponseDTO getUser(Long id);
 
-    Long updateUser(Long id, BaseUserRequestDTO request);
+    Long updateUser(Long id, ChangeUserRequestDTO request);
 
     Long setUserActive(Long id);
 
-    Long changePassword(Long id, String newPassword);
+    Long changePassword(Long id, NewPasswordRequestDTO request);
 }

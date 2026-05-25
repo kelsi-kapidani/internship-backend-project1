@@ -33,7 +33,14 @@ public class BookService implements IBookService {
     @Override
     public void existsById(Long id) {
         if(bookRepository.existsById(id)) {
-            throw new BadRequestException("Book with this title already exists");
+            throw new BadRequestException("Book with this id already exists");
+        }
+    }
+
+    @Override
+    public void existsNotById(Long id) {
+        if(!bookRepository.existsById(id)) {
+            throw new BadRequestException("No book with this id exists");
         }
     }
 
@@ -70,7 +77,7 @@ public class BookService implements IBookService {
 
     @Override
     public Long deleteBook(Long id) {
-        existsById(id);
+        existsNotById(id);
         bookRepository.deleteById(id);
         return id;
     }

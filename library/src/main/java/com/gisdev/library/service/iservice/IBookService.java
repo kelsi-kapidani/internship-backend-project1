@@ -13,6 +13,8 @@ public interface IBookService {
 
     void existsById(Long id);
 
+    void existsNotById( Long id);
+
     Optional<Book> getBookById(Long id);
 
     List<Book> getAllWithLibraryBooks();
