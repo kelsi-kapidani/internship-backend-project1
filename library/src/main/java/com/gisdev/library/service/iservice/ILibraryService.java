@@ -1,6 +1,7 @@
 package com.gisdev.library.service.iservice;
 
 import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.BaseLibraryResponseDTO;
 import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.entity.Library;
 
@@ -20,5 +21,5 @@ public interface ILibraryService {
 
     Long deleteLibrary(Long id);
 
-    List<FullLibraryResponseDTO> getAllLibraries(String name, String address);
+    List<BaseLibraryResponseDTO> getAllLibraries(String name, String address);
 }

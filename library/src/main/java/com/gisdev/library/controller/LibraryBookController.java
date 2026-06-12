@@ -6,6 +6,7 @@ import com.gisdev.library.service.iservice.ILibraryBookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,14 @@ public class LibraryBookController {
 
     private final ILibraryBookService lbService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/add/{id}")
     public ResponseEntity<Long> addBooksToLibrary(@PathVariable Long id, @Valid @RequestBody BaseLibraryBookRequestDTO request) {
 
         return ResponseEntity.ok(lbService.addListOfBooks(request, id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<LibraryBookResponseDTO> getAllBookStocks() {
 

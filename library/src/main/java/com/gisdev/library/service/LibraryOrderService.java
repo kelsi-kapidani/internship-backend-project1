@@ -4,12 +4,15 @@ import com.gisdev.library.constants.enums.Status;
 import com.gisdev.library.dto.request.order.*;
 import com.gisdev.library.dto.response.book.BaseBookResponseDTO;
 import com.gisdev.library.dto.response.bookorder.BookOrderResponseDTO;
+import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.dto.response.order.FullOrderResponseDTO;
 import com.gisdev.library.dto.response.user.BaseUserResponseDTO;
 import com.gisdev.library.entity.*;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.*;
 import com.gisdev.library.service.iservice.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,8 +38,12 @@ public class LibraryOrderService implements ILibraryOrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Long createOrder(Long id, OrderCreateRequestDTO request) {
-        LibraryUser user = userService.getUserById(id, "User with this id does not exist");
+    public Long createOrder(OrderCreateRequestDTO request) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+
+        LibraryUser user = userService.getUserByUsername(username, "User with this id does not exist");
         LibraryOrder order = buildAndSaveLibraryOrder(user);
 
         for (BookOrderRequestDTO boRequest : request.getBooks()) {
@@ -160,6 +167,31 @@ public class LibraryOrderService implements ILibraryOrderService {
         }
 
         return sum;
+    }
+
+    @Override
+    public List<FullOrderResponseDTO> getAllOrders() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+
+        LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
+
+        List<FullOrderResponseDTO> response = new ArrayList<>();
+        List<LibraryOrder> poolOfOrders;
+        if (currentUser.getRole().name().equals("ADMIN")) {
+            poolOfOrders = orderRepository.findAllCustom();
+        } else {
+            poolOfOrders = orderRepository.findAllByUserId(currentUser.getId());
+        }
+        for (LibraryOrder order: poolOfOrders) {
+            LibraryUser user = order.getUser();
+
+            List<BookOrderResponseDTO> books = new ArrayList<>();
+            int sum = fillBooksList(order, books);
+
+            mapAndAddOrder(order.getId(), sum, user, books, response);
+        }
+        return response;
     }
 
 }

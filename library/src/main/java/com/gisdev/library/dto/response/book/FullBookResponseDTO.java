@@ -1,5 +1,6 @@
 package com.gisdev.library.dto.response.book;
 
+import com.gisdev.library.dto.response.ListOfIdsResponseDTO;
 import com.gisdev.library.dto.response.library.BaseLibraryResponseDTO;
 import com.gisdev.library.dto.response.order.BaseOrderResponseDTO;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class FullBookResponseDTO extends BaseBookResponseDTO {
 
-    private List<BaseOrderResponseDTO> orders;
-    private List<BaseLibraryResponseDTO> libraries;
+    private List<ListOfIdsResponseDTO> orders;
+    private List<ListOfIdsResponseDTO> libraries;
 }

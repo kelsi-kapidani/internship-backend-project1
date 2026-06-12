@@ -1,13 +1,20 @@
 package com.gisdev.library.service;
 
 import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.BaseLibraryResponseDTO;
 import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.entity.Library;
+import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.LibraryRepository;
+import com.gisdev.library.repository.LibraryUserRepository;
 import com.gisdev.library.service.iservice.ILibraryService;
+import com.gisdev.library.service.iservice.ILibraryUserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +26,8 @@ public class LibraryService implements ILibraryService {
 
     private final LibraryRepository libraryRepository;
     private final ModelMapper modelMapper;
+    //private final ILibraryUserService userService;
+    private final LibraryUserRepository userRepository;
 
     @Override
     public void nameExists(String name) {
@@ -69,14 +78,46 @@ public class LibraryService implements ILibraryService {
         libraryRepository.deleteById(id);
         return id;
     }
-
+/*
     @Override
     public List<FullLibraryResponseDTO> getAllLibraries(String name, String address) {
 
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+
+      //LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
+        LibraryUser currentUser = userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException("Request send form a non valid user at the moment"));
+
         List<FullLibraryResponseDTO> response = new ArrayList<>();
 
-        for (Library library: libraryRepository.findAllWithFilters(name, address)) {
-            response.add(modelMapper.map(library, FullLibraryResponseDTO.class));
+        if (currentUser.getRole().name().equals("ADMIN")) {
+            for (Library library : libraryRepository.findAllWithFilters(name, address)) {
+                response.add(modelMapper.map(library, FullLibraryResponseDTO.class));
+            }
+        } else {
+            response.add(modelMapper.map(currentUser.getLibrary(),FullLibraryResponseDTO.class));
+        }
+
+        return response;
+    }
+ */
+    @Override
+    public List<BaseLibraryResponseDTO> getAllLibraries(String name, String address) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+
+        //LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
+        LibraryUser currentUser = userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException("Request send form a non valid user at the moment"));
+
+        List<BaseLibraryResponseDTO> response = new ArrayList<>();
+
+        if (currentUser.getRole().name().equals("ADMIN")) {
+            for (Library library : libraryRepository.findAllWithFilters(name, address)) {
+                response.add(modelMapper.map(library, BaseLibraryResponseDTO.class));
+            }
+        } else {
+            response.add(modelMapper.map(currentUser.getLibrary(),BaseLibraryResponseDTO.class));
         }
 
         return response;

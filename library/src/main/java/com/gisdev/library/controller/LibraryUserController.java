@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -42,6 +43,7 @@ public class LibraryUserController {
         return ResponseEntity.ok(userService.updateUser(id,request));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/activate/{id}")
     public ResponseEntity<Long> activateUser(@PathVariable Long id) {
 

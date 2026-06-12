@@ -1,6 +1,7 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.request.library.BaseLibraryRequestDTO;
+import com.gisdev.library.dto.response.library.BaseLibraryResponseDTO;
 import com.gisdev.library.dto.response.library.FullLibraryResponseDTO;
 import com.gisdev.library.service.iservice.ILibraryService;
 import jakarta.validation.Valid;
@@ -21,7 +22,7 @@ public class LibraryController {
     private final ILibraryService libraryService;
 
     @GetMapping("/all")
-    public List<FullLibraryResponseDTO> getAllLibraries (@RequestParam(required = false) String name, @RequestParam(required = false) String address) {
+    public List<BaseLibraryResponseDTO> getAllLibraries (@RequestParam(required = false) String name, @RequestParam(required = false) String address) {
 
         return libraryService.getAllLibraries(name, address);
     }

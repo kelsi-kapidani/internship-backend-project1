@@ -1,6 +1,7 @@
 package com.gisdev.library.service.iservice;
 
 import com.gisdev.library.dto.request.book.BaseBookRequestDTO;
+import com.gisdev.library.dto.response.book.BaseBookResponseDTO;
 import com.gisdev.library.dto.response.book.FullBookResponseDTO;
 import com.gisdev.library.entity.Book;
 
@@ -25,5 +26,5 @@ public interface IBookService {
 
     Long deleteBook(Long id);
 
-    List<FullBookResponseDTO> getAllBooks(List<String> filter, String sort);
+    List<BaseBookResponseDTO> getAllBooks(List<String> filter, String sort);
 }

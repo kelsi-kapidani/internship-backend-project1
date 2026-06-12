@@ -13,7 +13,10 @@ import com.gisdev.library.service.iservice.ILibraryService;
 import com.gisdev.library.service.iservice.ILibraryUserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,8 @@ public class LibraryUserService implements ILibraryUserService {
     private final LibraryUserRepository userRepository;
     private final ILibraryService libraryService;
     private final ModelMapper modelMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void usernameExists(String username) {
@@ -36,10 +41,16 @@ public class LibraryUserService implements ILibraryUserService {
     }
 
     @Override
+    public LibraryUser getUserByUsername(String username, String exceptionMessage) {
+        return(userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException(exceptionMessage)));
+    }
+
+    @Override
     public Long createUser(BaseUserRequestDTO request) {
         usernameExists(request.getUsername());
 
         Library library = libraryService.getLibraryById(request.getLibrary_id(),"Library of the user does not exist");
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
         LibraryUser user = modelMapper.map(request, LibraryUser.class);
 
         user.setLibrary(library);

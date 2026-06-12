@@ -1,14 +1,21 @@
 package com.gisdev.library.service;
 
 import com.gisdev.library.dto.request.book.BaseBookRequestDTO;
+import com.gisdev.library.dto.response.book.BaseBookResponseDTO;
 import com.gisdev.library.dto.response.book.FullBookResponseDTO;
 import com.gisdev.library.entity.Book;
+import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.BookRepository;
 import com.gisdev.library.service.iservice.IBookService;
+import com.gisdev.library.service.iservice.ILibraryService;
+import com.gisdev.library.service.iservice.ILibraryUserService;
+import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
@@ -22,6 +29,7 @@ public class BookService implements IBookService {
 
     private final BookRepository bookRepository;
     private final ModelMapper mapper;
+    private final ILibraryUserService userService;
 
     @Override
     public void existsByTitle(String title) {
@@ -83,13 +91,29 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<FullBookResponseDTO> getAllBooks(List<String> filters, String sort) {
-        List<FullBookResponseDTO> response = new ArrayList<>();
+    public List<BaseBookResponseDTO> getAllBooks(List<String> filters, String sort) {
 
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) principal).getUsername();
+        LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
+
+        List<BaseBookResponseDTO> response = new ArrayList<>();
+
+        Long libraryId;
+        if (currentUser.getRole().name().equals("ADMIN")) {
+            libraryId = (long)-1;
+        } else {
+            libraryId = currentUser.getId();
+        }
+
+        for (Book book: bookRepository.findAll(genSpecs(filters, libraryId), genSort(sort))) {
+            response.add(mapper.map(book, BaseBookResponseDTO.class));
+        }
+        /*
         for (Book book: bookRepository.findAll(genSpecs(filters), genSort(sort))) {
             response.add(mapper.map(book, FullBookResponseDTO.class));
         }
-
+        */
         return response;
     }
 
@@ -109,7 +133,7 @@ public class BookService implements IBookService {
         return Sort.by(parts[0]).ascending();
     }
 
-    public Specification<Book> genSpecs(List<String> filters) {
+    public Specification<Book> genSpecs(List<String> filters, Long libraryId) {
         if (filters == null || filters.isEmpty()) {
             return (root, query, cb) -> cb.conjunction();
         }
@@ -124,7 +148,7 @@ public class BookService implements IBookService {
             String[] parts = filter.split(":");
 
             if(!allowedFields.contains(parts[0])) {
-                throw new BadRequestException("The filtering field"+parts[0]+"is not legal");
+                throw new BadRequestException("The filtering field"+ parts[0] +"is not legal");
             }
 
             switch (parts[1]) {
@@ -153,6 +177,16 @@ public class BookService implements IBookService {
                     throw new BadRequestException("The operator"+parts[1]+"is not legal");
             }
         }
+
+        if (libraryId != null && libraryId != -1) {
+            specs = specs.and((root, query, cb) -> {
+                Join<Object, Object> librariesJoin = root.join("libraries");
+                Join<Object, Object> libraryJoin = librariesJoin.join("library");
+
+                return cb.equal(libraryJoin.get("id"), libraryId);
+            });
+        }
+
         return specs;
     }
 

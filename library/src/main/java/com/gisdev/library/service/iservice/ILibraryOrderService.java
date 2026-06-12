@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface ILibraryOrderService {
 
-    Long createOrder(Long userId, OrderCreateRequestDTO request);
+    Long createOrder(OrderCreateRequestDTO request);
 
     Long updateOrder(Long orderId, OrderUpdateRequestDTO request);
 
     List<FullOrderResponseDTO> getAllPendingOrders();
+
+    List<FullOrderResponseDTO> getAllOrders();
 }

@@ -12,6 +12,8 @@ public interface ILibraryUserService {
     
     void usernameExists(String username);
 
+    LibraryUser getUserByUsername(String username, String exceptionMessage);
+
     Long createUser(BaseUserRequestDTO request);
 
     FullUserResponseDTO getUser(Long id);
