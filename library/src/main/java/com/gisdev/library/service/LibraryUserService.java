@@ -25,7 +25,6 @@ public class LibraryUserService implements ILibraryUserService {
     private final LibraryUserRepository userRepository;
     private final ILibraryService libraryService;
     private final ModelMapper modelMapper;
-
     private final PasswordEncoder passwordEncoder;
 
     @Override

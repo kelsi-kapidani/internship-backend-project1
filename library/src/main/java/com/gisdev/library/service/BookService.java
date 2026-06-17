@@ -7,6 +7,7 @@ import com.gisdev.library.entity.Book;
 import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.BookRepository;
+import com.gisdev.library.service.iservice.IAuthService;
 import com.gisdev.library.service.iservice.IBookService;
 import com.gisdev.library.service.iservice.ILibraryService;
 import com.gisdev.library.service.iservice.ILibraryUserService;
@@ -30,6 +31,7 @@ public class BookService implements IBookService {
     private final BookRepository bookRepository;
     private final ModelMapper mapper;
     private final ILibraryUserService userService;
+    private final IAuthService authService;
 
     @Override
     public void existsByTitle(String title) {
@@ -93,10 +95,7 @@ public class BookService implements IBookService {
     @Override
     public List<BaseBookResponseDTO> getAllBooks(List<String> filters, String sort) {
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
-        LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
-
+        LibraryUser currentUser = authService.getUserByToken();
         List<BaseBookResponseDTO> response = new ArrayList<>();
 
         Long libraryId;

@@ -8,6 +8,7 @@ import com.gisdev.library.entity.LibraryUser;
 import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.repository.LibraryRepository;
 import com.gisdev.library.repository.LibraryUserRepository;
+import com.gisdev.library.service.iservice.IAuthService;
 import com.gisdev.library.service.iservice.ILibraryService;
 import com.gisdev.library.service.iservice.ILibraryUserService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class LibraryService implements ILibraryService {
     private final ModelMapper modelMapper;
     //private final ILibraryUserService userService;
     private final LibraryUserRepository userRepository;
+    private final IAuthService authService;
 
     @Override
     public void nameExists(String name) {
@@ -104,12 +106,7 @@ public class LibraryService implements ILibraryService {
     @Override
     public List<BaseLibraryResponseDTO> getAllLibraries(String name, String address) {
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
-
-        //LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
-        LibraryUser currentUser = userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException("Request send form a non valid user at the moment"));
-
+        LibraryUser currentUser = authService.getUserByToken();
         List<BaseLibraryResponseDTO> response = new ArrayList<>();
 
         if (currentUser.getRole().name().equals("ADMIN")) {
