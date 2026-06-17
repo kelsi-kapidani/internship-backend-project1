@@ -12,7 +12,7 @@ public interface ILibraryUserService {
     
     void usernameExists(String username);
 
-    LibraryUser getUserByUsername(String username, String exceptionMessage);
+   // LibraryUser getUserByUsername(String username, String exceptionMessage);
 
     Long createUser(BaseUserRequestDTO request);
 

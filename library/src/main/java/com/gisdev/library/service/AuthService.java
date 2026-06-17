@@ -11,6 +11,9 @@ import com.gisdev.library.repository.LibraryUserRepository;
 import com.gisdev.library.security.JwtService;
 import com.gisdev.library.service.iservice.IAuthService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,8 +28,11 @@ public class AuthService implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final LibraryUserRepository userRepository;
-    private final LibraryUserService userService;
-    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public LibraryUser getUserByUsername(String username, String exceptionMessage) {
+        return(userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException(exceptionMessage)));
+    }
 
     @Override
     public LibraryUser getUserByToken() {
@@ -34,13 +40,19 @@ public class AuthService implements IAuthService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails) principal).getUsername();
 
-        return userService.getUserByUsername(username, "Request not from a current valid user");
+        return getUserByUsername(username, "Request not from a current valid user");
     }
 
     @Override
     public TokenDTO handleLogIn(LoginDTO request) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        } catch (DisabledException e) {
+            throw new BadRequestException("Your account is not active");
+        } catch (BadCredentialsException e) {
+            throw new BadRequestException("Invalid username or password");
+        }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
         String token = jwtService.generateToken(request.getUsername());
 
         return new TokenDTO(token);

@@ -38,11 +38,11 @@ public class LibraryUserService implements ILibraryUserService {
     public LibraryUser getUserById(Long id, String exceptionMessage) {
         return userRepository.findById(id).orElseThrow(() -> new BadRequestException(exceptionMessage));
     }
-
-    @Override
-    public LibraryUser getUserByUsername(String username, String exceptionMessage) {
-        return(userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException(exceptionMessage)));
-    }
+//
+//    @Override
+//    public LibraryUser getUserByUsername(String username, String exceptionMessage) {
+//        return(userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException(exceptionMessage)));
+//    }
 
     @Override
     public Long createUser(BaseUserRequestDTO request) {

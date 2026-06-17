@@ -33,6 +33,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     private final ILibraryUserService userService;
     private final ILibraryBookService lbService;
     private final IBookOrderService boService;
+    private final IAuthService authService;
 
 
 
@@ -40,10 +41,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     @Transactional(rollbackFor = Exception.class)
     public Long createOrder(OrderCreateRequestDTO request) {
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
-
-        LibraryUser user = userService.getUserByUsername(username, "User with this id does not exist");
+        LibraryUser user = authService.getUserByToken();
         LibraryOrder order = buildAndSaveLibraryOrder(user);
 
         for (BookOrderRequestDTO boRequest : request.getBooks()) {
@@ -171,13 +169,11 @@ public class LibraryOrderService implements ILibraryOrderService {
 
     @Override
     public List<FullOrderResponseDTO> getAllOrders() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
 
-        LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
-
+        LibraryUser currentUser = authService.getUserByToken();
         List<FullOrderResponseDTO> response = new ArrayList<>();
         List<LibraryOrder> poolOfOrders;
+
         if (currentUser.getRole().name().equals("ADMIN")) {
             poolOfOrders = orderRepository.findAllCustom();
         } else {

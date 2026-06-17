@@ -27,8 +27,6 @@ public class LibraryService implements ILibraryService {
 
     private final LibraryRepository libraryRepository;
     private final ModelMapper modelMapper;
-    //private final ILibraryUserService userService;
-    private final LibraryUserRepository userRepository;
     private final IAuthService authService;
 
     @Override
@@ -80,29 +78,7 @@ public class LibraryService implements ILibraryService {
         libraryRepository.deleteById(id);
         return id;
     }
-/*
-    @Override
-    public List<FullLibraryResponseDTO> getAllLibraries(String name, String address) {
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = ((UserDetails) principal).getUsername();
-
-      //LibraryUser currentUser = userService.getUserByUsername(username, "Request not from a current valid user");
-        LibraryUser currentUser = userRepository.findByUsername(username).orElseThrow(() -> new BadRequestException("Request send form a non valid user at the moment"));
-
-        List<FullLibraryResponseDTO> response = new ArrayList<>();
-
-        if (currentUser.getRole().name().equals("ADMIN")) {
-            for (Library library : libraryRepository.findAllWithFilters(name, address)) {
-                response.add(modelMapper.map(library, FullLibraryResponseDTO.class));
-            }
-        } else {
-            response.add(modelMapper.map(currentUser.getLibrary(),FullLibraryResponseDTO.class));
-        }
-
-        return response;
-    }
- */
     @Override
     public List<BaseLibraryResponseDTO> getAllLibraries(String name, String address) {
 

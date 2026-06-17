@@ -1,8 +1,12 @@
 package com.gisdev.library.controller;
 
 import com.gisdev.library.dto.request.security.LoginDTO;
+import com.gisdev.library.dto.request.user.BaseUserRequestDTO;
 import com.gisdev.library.dto.response.security.TokenDTO;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.gisdev.library.service.iservice.IAuthService;
 
@@ -14,7 +18,7 @@ public class AuthController {
     private final IAuthService authService;
 
     @PostMapping("/login")
-    public TokenDTO login(@RequestBody LoginDTO request) {
+    public TokenDTO logIn(@RequestBody LoginDTO request) {
 
         return authService.handleLogIn(request);
     }
