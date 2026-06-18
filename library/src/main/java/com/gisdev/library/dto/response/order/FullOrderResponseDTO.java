@@ -1,5 +1,6 @@
 package com.gisdev.library.dto.response.order;
 
+import com.gisdev.library.constants.enums.Status;
 import com.gisdev.library.dto.response.bookorder.BookOrderResponseDTO;
 import com.gisdev.library.dto.response.user.BaseUserResponseDTO;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ public class FullOrderResponseDTO {
 
     private Long id;
     private Integer total;
+    private Status status;
     private BaseUserResponseDTO user;
     private List<BookOrderResponseDTO> books;
 }

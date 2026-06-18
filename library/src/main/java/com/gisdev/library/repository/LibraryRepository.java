@@ -15,13 +15,6 @@ public interface LibraryRepository extends JpaRepository<Library, Long> {
 
     boolean existsById(Long id);
 
-    @Query("""
-    SELECT DISTINCT l FROM Library l
-    LEFT JOIN FETCH l.users
-    LEFT JOIN FETCH l.books lb
-    LEFT JOIN FETCH lb.book
-    WHERE (:name IS NULL OR l.name = :name)
-      AND (:address IS NULL OR l.address = :address)
-    """)
+    @Query("SELECT l FROM Library l WHERE (:name IS NULL OR l.name LIKE %:name%) AND (:address IS NULL OR l.address LIKE %:address%)")
     List<Library> findAllWithFilters(@Param("name") String name, @Param("address") String address);
 }

@@ -28,10 +28,15 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String path = request.getServletPath();
+        if (path.startsWith("/auth") || path.equals("/user/create")) {
             filterChain.doFilter(request, response);
+            return;
+        }
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            sendError(response, "Token is missing");
             return;
         }
         try {
@@ -64,7 +69,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         response.getWriter().write("""
         {
-            "error": "Unauthorized",
             "message": "%s"
         }
     """.formatted(message));
