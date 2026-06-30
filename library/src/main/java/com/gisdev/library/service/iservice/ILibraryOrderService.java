@@ -16,4 +16,8 @@ public interface ILibraryOrderService {
     List<FullOrderResponseDTO> getAllPendingOrders();
 
     List<FullOrderResponseDTO> getAllOrders();
+
+    byte[] exportOrderPDF(Long id);
+
+    public byte[] exportOrdersExcel(String status, Long userId);
 }

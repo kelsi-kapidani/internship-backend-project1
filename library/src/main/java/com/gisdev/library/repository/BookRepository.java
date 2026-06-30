@@ -18,20 +18,11 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     )
     boolean existsByTitle(@Param("title") String title);
 
-    //"x3 text block that allows multi-lines -> better readability
+    //x3 text block that allows multi-lines -> better readability
     @Query("""
     SELECT DISTINCT b FROM Book b
     LEFT JOIN FETCH b.libraries lb
     LEFT JOIN FETCH lb.library
     """)
     List<Book> findAllWithLibraryBooks();
-/*
-    @Query("""
-        SELECT DISTINCT b FROM Book b
-        JOIN FETCH b.libraries lb
-        JOIN FETCH lb.library l
-        WHERE l.id = :libraryId
-        """)
-    List<Book> findAllByLibraryId(@Param("libraryId") Long libraryId);
-*/
 }

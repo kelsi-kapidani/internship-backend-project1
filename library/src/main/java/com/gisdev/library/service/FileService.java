@@ -1,5 +1,6 @@
 package com.gisdev.library.service;
 
+import com.gisdev.library.exception.BadRequestException;
 import com.gisdev.library.service.iservice.IFileService;
 import com.gisdev.library.util.FileUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,51 +29,37 @@ public class FileService implements IFileService {
 
     @Override
     public String save(MultipartFile file) {
-
         try {
-
-            String storedName =
-                    fileUtil.generateStoredFileName(
-                            file.getOriginalFilename()
-                    );
-
-            Path path =
-                    Paths.get(storagePath, storedName);
+            String storedName = fileUtil.generateStoredFileName(file.getOriginalFilename());
+            Path path = Paths.get(storagePath, storedName);
 
             Files.copy(
-                    file.getInputStream(),
-                    path,
-                    StandardCopyOption.REPLACE_EXISTING
+                file.getInputStream(),
+                path,
+                StandardCopyOption.REPLACE_EXISTING
             );
 
             return path.toString();
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException("Failed to save uploaded file");
         }
     }
 
     @Override
     public Resource load(String location) {
-
         try {
-            return new UrlResource(
-                    Paths.get(location).toUri()
-            );
+            return new UrlResource(Paths.get(location).toUri());
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException("Invalid stored file location");
         }
     }
 
     @Override
     public void delete(String location) {
-
         try {
-            Files.deleteIfExists(
-                    Paths.get(location)
-            );
+            Files.deleteIfExists(Paths.get(location));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BadRequestException("Document file does not exist");
         }
     }
 }

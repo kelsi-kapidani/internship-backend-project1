@@ -1,25 +1,21 @@
 package com.gisdev.library.util;
 
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@NoArgsConstructor
+import java.util.Random;
+
+@Component
 public class FileUtil {
 
     public String generateStoredFileName(String originalName) {
-
-        return System.currentTimeMillis()
-                + "_"
-                + originalName;
+        return new Random().nextLong(System.currentTimeMillis()) + "_" + originalName;
     }
 
     public String removeTimestampPrefix(String storedName) {
-
         int index = storedName.indexOf("_");
-
         if(index == -1) {
             return storedName;
         }
-
         return storedName.substring(index + 1);
     }
 }

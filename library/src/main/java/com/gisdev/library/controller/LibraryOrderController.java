@@ -6,7 +6,9 @@ import com.gisdev.library.dto.response.order.FullOrderResponseDTO;
 import com.gisdev.library.service.iservice.ILibraryOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -49,4 +51,23 @@ public class LibraryOrderController {
         return orderService.getAllOrders();
     }
 
+    @GetMapping("/export/{id}")
+    public ResponseEntity<byte[]> exportOrder(@PathVariable Long id) {
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=order_" + id + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(orderService.exportOrderPDF(id));
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportOrders(@RequestParam(required = false) String status, @RequestParam(required = false) Long userId) {
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=pending-orders.xlsx")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(orderService.exportOrdersExcel(status, userId));
+    }
 }

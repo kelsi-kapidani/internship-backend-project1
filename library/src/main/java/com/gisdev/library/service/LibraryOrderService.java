@@ -9,6 +9,8 @@ import com.gisdev.library.dto.response.order.FullOrderResponseDTO;
 import com.gisdev.library.dto.response.user.BaseUserResponseDTO;
 import com.gisdev.library.entity.*;
 import com.gisdev.library.exception.BadRequestException;
+import com.gisdev.library.export.order.ExcelOrderExporter;
+import com.gisdev.library.export.order.PDFOrderExporter;
 import com.gisdev.library.repository.*;
 import com.gisdev.library.service.iservice.*;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.gisdev.library.constants.enums.Status.NE_PRITJE;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +38,8 @@ public class LibraryOrderService implements ILibraryOrderService {
     private final ILibraryBookService lbService;
     private final IBookOrderService boService;
     private final IAuthService authService;
-
+    private final PDFOrderExporter pdfExporter;
+    private final ExcelOrderExporter excelExporter;
 
 
     @Override
@@ -64,7 +69,7 @@ public class LibraryOrderService implements ILibraryOrderService {
 
     private LibraryOrder buildAndSaveLibraryOrder(LibraryUser user) {
         LibraryOrder order = LibraryOrder.builder()
-                .status(Status.NE_PRITJE)
+                .status(NE_PRITJE)
                 .user(user)
                 .build();
         orderRepository.save(order);
@@ -109,10 +114,10 @@ public class LibraryOrderService implements ILibraryOrderService {
     }
 
     private void validateUpdateRequest(OrderUpdateRequestDTO request, LibraryOrder order) {
-        if (request.getStatus() == Status.NE_PRITJE) {
+        if (request.getStatus() == NE_PRITJE) {
             throw new BadRequestException("You can not send order's status to pending");
         }
-        if (order.getStatus() != Status.NE_PRITJE) {
+        if (order.getStatus() != NE_PRITJE) {
             throw new BadRequestException("This order's status cannot be changed");
         }
     }
@@ -133,7 +138,7 @@ public class LibraryOrderService implements ILibraryOrderService {
     public List<FullOrderResponseDTO> getAllPendingOrders() {
 
         List<FullOrderResponseDTO> response = new ArrayList<>();
-        for (LibraryOrder order: orderRepository.findAllByStatus(Status.NE_PRITJE)) {
+        for (LibraryOrder order: orderRepository.findAllByStatus(NE_PRITJE)) {
             LibraryUser user = order.getUser();
 
             List<BookOrderResponseDTO> books = new ArrayList<>();
@@ -191,4 +196,23 @@ public class LibraryOrderService implements ILibraryOrderService {
         return response;
     }
 
+    @Override
+    public byte[] exportOrderPDF(Long id) {
+
+        LibraryOrder order = orderRepository.findById(id).orElseThrow(() -> new BadRequestException("Order not found"));
+
+        return pdfExporter.exportOrder(order);
+    }
+
+    @Override
+    public byte[] exportOrdersExcel(String status, Long userId) {
+        Status parsedStatus = null;
+        if (status != null && !status.isBlank()) {
+            parsedStatus = Status.valueOf(status);
+        }
+
+        List<LibraryOrder> orders = orderRepository.findAllWithFilters(parsedStatus, userId);
+        System.out.println("found orders' size:" + orders.size());
+        return excelExporter.exportOrders(orders);
+    }
 }

@@ -104,11 +104,6 @@ public class BookService implements IBookService {
         for (Book book: bookRepository.findAll(genSpecs(filters, libraryId), genSort(sort))) {
             response.add(mapper.map(book, BaseBookResponseDTO.class));
         }
-        /*
-        for (Book book: bookRepository.findAll(genSpecs(filters), genSort(sort))) {
-            response.add(mapper.map(book, FullBookResponseDTO.class));
-        }
-        */
         return response;
     }
 

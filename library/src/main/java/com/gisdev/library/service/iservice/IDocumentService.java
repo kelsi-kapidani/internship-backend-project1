@@ -1,18 +1,19 @@
 package com.gisdev.library.service.iservice;
 
-import com.gisdev.library.constants.enums.Source;
-import com.gisdev.library.entity.Document;
-import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.gisdev.library.dto.response.document.DocumentDownloadResponseDTO;
+import com.gisdev.library.dto.response.document.DocumentResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface IDocumentService {
-    public Long uploadDocument(MultipartFile file, Source source, Long sourceId);
-    public Resource download(Long id);
-    public Page<Document> search(
-            String search,
-            Pageable pageable
-    );
+
+    Long uploadDocument(MultipartFile file, String requestJson);
+
+    DocumentDownloadResponseDTO downloadDocument(Long id);
+
+    List<DocumentResponseDTO> getAllDocuments(List<String> filter, String sort);
+
+    Long deleteDocument(Long id);
 
 }

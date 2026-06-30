@@ -40,8 +40,6 @@ public class BookController {
 
     @GetMapping("/all")
     @BookControllerDocs.CreateClientDoc
-    //@Operation(description = "Allowed operations for filtering:  \"eq\", \"neq\", \"gt\", \"geq\", \"lt\", \"leq\", \"ilike\"  \n" +
-              //               "Allowed sorting fields: \"title\", \"author\", \"genre\", \"section\", \"price\", \"year_of_publication\" ")
     public List<BaseBookResponseDTO> getAllBooks(@RequestParam(required = false) List<String> filter, @RequestParam(required = false) String sort) {
 
         return bookService.getAllBooks(filter, sort);

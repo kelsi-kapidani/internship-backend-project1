@@ -1,6 +1,7 @@
 package com.gisdev.library.repository;
 
 import com.gisdev.library.constants.enums.Status;
+import com.gisdev.library.entity.Library;
 import com.gisdev.library.entity.LibraryOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -40,4 +41,11 @@ public interface LibraryOrderRepository extends JpaRepository<LibraryOrder, Long
     WHERE o.user.id = :userId
     """)
     List<LibraryOrder> findAllByUserId(@Param("userId") Long userId);
+
+    @Query("""
+    SELECT o FROM LibraryOrder o
+    WHERE (:status IS NULL OR o.status = :status)
+      AND (:userId IS NULL OR o.user.id = :userId)
+    """)
+    List<LibraryOrder> findAllWithFilters(@Param("status") Status status,@Param("userId") Long userId);
 }
