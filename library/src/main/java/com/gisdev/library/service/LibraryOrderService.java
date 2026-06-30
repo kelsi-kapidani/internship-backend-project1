@@ -208,11 +208,13 @@ public class LibraryOrderService implements ILibraryOrderService {
     public byte[] exportOrdersExcel(String status, Long userId) {
         Status parsedStatus = null;
         if (status != null && !status.isBlank()) {
-            parsedStatus = Status.valueOf(status);
+            try {
+                parsedStatus = Status.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid status: " + status);
+            }
         }
-
         List<LibraryOrder> orders = orderRepository.findAllWithFilters(parsedStatus, userId);
-        System.out.println("found orders' size:" + orders.size());
         return excelExporter.exportOrders(orders);
     }
 }

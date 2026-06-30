@@ -66,7 +66,7 @@ public class LibraryOrderController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=pending-orders.xlsx")
+                        "attachment; filename=orders.xlsx")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(orderService.exportOrdersExcel(status, userId));
     }

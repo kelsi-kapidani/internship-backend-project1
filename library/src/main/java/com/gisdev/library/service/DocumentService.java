@@ -32,33 +32,34 @@ public class DocumentService implements IDocumentService{
     private final IFileService fileService;
     private final FileUtil fileUtil;
     private final ModelMapper mapper;
-    private final ObjectMapper objectMapper;
 
     @Override
     public Long uploadDocument(MultipartFile file, String requestJson) {
+
+        ObjectMapper mapper = new ObjectMapper();
         UploadRequestDTO request;
+
         try {
-            request = objectMapper.readValue(requestJson, UploadRequestDTO.class);
+            request = mapper.readValue(requestJson, UploadRequestDTO.class);
         } catch (Exception e) {
             throw new BadRequestException("Invalid request JSON");
         }
 
         String location = fileService.save(file);
         Document document = new Document();
-        document.setName(Paths
-                .get(location)
-                .getFileName()
-                .toString()
-        );
+        setAndSaveDocument(document, location, request, file);
 
+        return document.getId();
+    }
+
+    public void setAndSaveDocument(Document document, String location,  UploadRequestDTO request, MultipartFile file) {
+        document.setName(Paths.get(location).getFileName().toString());
         document.setLocation(location);
         document.setSource(request.getSource());
         document.setSourceId(request.getSourceId());
         document.setUploadTime(LocalDateTime.now());
         document.setSize(file.getSize());
         documentRepository.save(document);
-
-        return document.getId();
     }
 
     @Override
